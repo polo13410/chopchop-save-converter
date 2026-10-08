@@ -1,0 +1,5 @@
+# Sauvegardes et fichiers de travail : données personnelles, pas de code
+work/
+*.sav
+*.json
+__pycache__/
