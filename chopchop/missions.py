@@ -225,6 +225,23 @@ def infer_progress(missions_demo, active, recipes, board, shop, world_objects=fr
             return target in started
         return False
 
+    # A recipe can also be known from outside missions (from the start, a shop...), so it is
+    # weak evidence. A completion resting only on recipes is vetoed if the mission spawns
+    # lasting objects when it succeeds and none of them is in the demo world. Items get
+    # picked up, triggers fire, construction slots get used up, UI or sound objects vanish,
+    # and objects some mission destroys may be gone, so those do not count.
+    destroyable = {t for m in missions_demo.values() for _, c, t in m["actions"]
+                   if c == "MissionAction_DestroyWorldObjectCount"}
+
+    def lasting(target):
+        return (target and target.startswith("p_") and target not in destroyable
+                and not target.startswith(("p_trigger", "p_audio", "p_ui", "p_VFX", "p_landing", "p_Slot")))
+
+    def vetoed(name):
+        spawns = [t for g, c, t in missions_demo[name]["actions"]
+                  if g == SUCCESS and c == "MissionAction_SpawnObject" and lasting(t)]
+        return bool(spawns) and not any(t in world_objects for t in spawns)
+
     changed = True
     while changed:
         changed = False
@@ -237,7 +254,9 @@ def infer_progress(missions_demo, active, recipes, board, shop, world_objects=fr
             if name not in started and any(effect_seen(c, t) for c, t in groups[START]):
                 started.add(name)
                 changed = True
-            if name not in completed and name not in active and any(effect_seen(c, t) for c, t in groups[SUCCESS]):
+            strong = any(effect_seen(c, t) for c, t in groups[SUCCESS] if c != "MissionAction_UnLockRecipe")
+            weak = any(effect_seen(c, t) for c, t in groups[SUCCESS] if c == "MissionAction_UnLockRecipe")
+            if name not in completed and name not in active and (strong or (weak and not vetoed(name))):
                 completed.add(name)
                 started.add(name)
                 changed = True
