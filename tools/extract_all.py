@@ -9,7 +9,7 @@ Usage (requires UnityPy):
 import os
 import sys
 
-from tools import extract_catalog, extract_missions, extract_scene
+from tools import extract_catalog, extract_missions, extract_scene, extract_triggers
 
 DEFAULT_STEAM = r"C:\Program Files (x86)\Steam\steamapps\common"
 GAMES = {
@@ -35,6 +35,9 @@ def main():
         missions = extract_missions.extract(game)
         extract_missions.write(missions, os.path.join(out, f"missions-{version}.json"))
         print(f"  {len(missions)} missions")
+        triggers = extract_triggers.extract(game)
+        extract_triggers.write(triggers, os.path.join(out, f"triggers-{version}.json"))
+        print(f"  {len(triggers)} zone triggers")
 
 
 if __name__ == "__main__":

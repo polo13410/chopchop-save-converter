@@ -5,7 +5,8 @@ What is transferred:
 - target audience values;
 - special inventories: money, player backpack...;
 - the mission board and the active missions, with the state of their checks;
-- missions, recipes and rewards the full game added to missions the demo ran;
+- missions, recipes and rewards the full game added to missions the demo ran,
+  and to zone triggers the demo already fired (e.g. the lab door battery holders);
 - player stats: strength, stamina, move speed;
 - world objects: cut trees, buildings, machines and their contents;
 - player position and view direction.
@@ -94,8 +95,14 @@ def convert(demo_bytes, base_bytes=None, with_world=True, log=print, data=None):
     missions_demo = missions.load_definitions(_path("missions-demo.json", data))
     missions_full = missions.load_definitions(_path("missions-full.json", data))
     started, completed = missions.demo_progress(demo, catalog_demo, missions_demo)
-    missions.apply_full_additions(base, catalog_demo, catalog_full, missions_demo, missions_full,
-                                  started, completed, log, skip_missions=KEEP_BASE_MISSIONS)
+    adds = missions.Additions(base, catalog_demo, catalog_full, missions_full, completed,
+                              skip_missions=KEEP_BASE_MISSIONS)
+    missions.apply_full_additions(adds, catalog_demo, catalog_full, missions_demo, missions_full,
+                                  started, completed, log)
+    if with_world:
+        missions.apply_trigger_additions(adds, demo, missions.load_definitions(_path("triggers-demo.json", data)),
+                                         missions.load_definitions(_path("triggers-full.json", data)), log)
+    adds.finish(log)
     missions.ensure_tutorial_marker(base, catalog_full, started, log)
 
     T.renumber(base, originals)

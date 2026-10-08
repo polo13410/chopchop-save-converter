@@ -1,0 +1,2770 @@
+[
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone Hell (1)",
+  "position": [
+   1015.9,
+   158.86,
+   133.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (1)",
+  "position": [
+   383.48,
+   82.26,
+   87.5
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (5)",
+  "position": [
+   127.4,
+   53.81,
+   189.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone Hell",
+  "position": [
+   1015.2,
+   158.86,
+   265.3
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (2)",
+  "position": [
+   397.5,
+   96.4,
+   321.8
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone HellLavaFall (1)",
+  "position": [
+   993.73,
+   231.783,
+   214.669
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (4)",
+  "position": [
+   102.5,
+   111.393,
+   -8.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (17)",
+  "position": [
+   6.5,
+   111.393,
+   436.5
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (14)",
+  "position": [
+   364.5,
+   146.5,
+   407.9
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone",
+  "position": [
+   274.27,
+   102.394,
+   423.99
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone",
+  "position": [
+   320.4,
+   96.4,
+   239.2
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (15)",
+  "position": [
+   234.4,
+   130.4,
+   436.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (3)",
+  "position": [
+   435.64,
+   82.38,
+   135.64
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone WormHole01",
+  "position": [
+   215.71,
+   77.68,
+   367.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (7)",
+  "position": [
+   164.5,
+   53.81,
+   154.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "DungeonKillzone",
+  "position": [
+   -407.91,
+   -467.2,
+   -120.337
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (13)",
+  "position": [
+   5.8,
+   111.393,
+   285.6
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (1)",
+  "position": [
+   341.7,
+   96.4,
+   310.3
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (3)",
+  "position": [
+   48.2,
+   111.393,
+   57.2
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (7)",
+  "position": [
+   484.9,
+   186.1,
+   116.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (3)",
+  "position": [
+   169.7,
+   53.81,
+   425.2
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (5)",
+  "position": [
+   248.4,
+   117.8,
+   -13.3
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (18)",
+  "position": [
+   586.9,
+   182.6,
+   119.7
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (1)",
+  "position": [
+   216.6,
+   53.81,
+   239.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone DeliveryArea",
+  "position": [
+   271.44,
+   98.0,
+   261.35
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone Elevator",
+  "position": [
+   289.134,
+   98.279,
+   214.923
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (16)",
+  "position": [
+   124.9,
+   133.9,
+   446.3
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone",
+  "position": [
+   397.1,
+   82.26,
+   122.6
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (10)",
+  "position": [
+   545.4,
+   140.6,
+   428.9
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone",
+  "position": [
+   232.0,
+   53.81,
+   130.3
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (8)",
+  "position": [
+   25.9,
+   53.81,
+   154.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (20)",
+  "position": [
+   402.3,
+   183.2,
+   406.3
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (8)",
+  "position": [
+   631.0,
+   182.6,
+   216.6
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (6)",
+  "position": [
+   393.7,
+   133.3,
+   22.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "IceWaterKillzone",
+  "position": [
+   532.229,
+   185.659,
+   292.742
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (11)",
+  "position": [
+   545.4,
+   140.6,
+   428.9
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone HellLavaFall",
+  "position": [
+   1003.72,
+   219.88,
+   199.53
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (2)",
+  "position": [
+   421.99,
+   82.38,
+   143.31
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone",
+  "position": [
+   308.406,
+   51.653,
+   361.97
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (9)",
+  "position": [
+   620.1,
+   181.4,
+   345.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (19)",
+  "position": [
+   549.6,
+   186.1,
+   116.2
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone",
+  "position": [
+   345.885,
+   57.887,
+   399.87
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (4)",
+  "position": [
+   463.36,
+   82.38,
+   128.34
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (12)",
+  "position": [
+   24.8,
+   111.393,
+   163.5
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (4)",
+  "position": [
+   166.1,
+   53.81,
+   217.5
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "KillzoneLavaLake",
+  "position": [
+   337.16,
+   44.35,
+   378.64
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone Hell (3)",
+  "position": [
+   905.1,
+   158.86,
+   290.6
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone Hell (2)",
+  "position": [
+   892.7,
+   158.86,
+   168.9
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 0,
+  "name": "Killzone (6)",
+  "position": [
+   96.2,
+   53.81,
+   184.6
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 1780265180,
+  "name": "p_prop_campfireOn (1)",
+  "position": [
+   264.257,
+   113.532,
+   130.924
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level2",
+  "assetID": 1780265180,
+  "name": "p_prop_campfireOn",
+  "position": [
+   -477.47,
+   -345.33,
+   -27.023
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 195331431,
+  "name": "Trigger_LocationDiscovered_HamsterHome",
+  "position": [
+   382.17,
+   69.481,
+   367.22
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_HamsterHome",
+    [
+     382.17,
+     69.481,
+     367.22
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1882444904,
+  "name": "p_Animal_Crab02 (3)",
+  "position": [
+   446.354,
+   100.793,
+   364.16
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1882444904,
+  "name": "p_Animal_Crab02 (2)",
+  "position": [
+   426.578,
+   100.793,
+   369.456
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1882444904,
+  "name": "p_Animal_Crab02 (1)",
+  "position": [
+   432.002,
+   100.793,
+   376.246
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1882444904,
+  "name": "p_Animal_Crab02",
+  "position": [
+   442.364,
+   100.793,
+   374.554
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 21812348,
+  "name": "Trigger_GenovatechLabDiscovered",
+  "position": [
+   406.0,
+   130.08,
+   270.76
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_GenovatechLab",
+    [
+     406.0,
+     130.08,
+     270.76
+    ],
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_Dome",
+    [
+     420.95,
+     130.2,
+     276.98
+    ],
+    -314945012
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_labDoorBatteryHolderBroken01",
+    [
+     403.803,
+     131.052,
+     277.557
+    ],
+    -1570074645
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_labDoorBatteryHolderBroken02",
+    [
+     405.434,
+     131.045,
+     269.657
+    ],
+    -54355581
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_labDoorEyeCollider",
+    [
+     404.679,
+     138.8,
+     273.629
+    ],
+    1721262986
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_GenovatechLab_00_RepairDoor",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 1914355436,
+  "name": "Trigger_OldWindmillDiscovered",
+  "position": [
+   370.67,
+   102.01,
+   223.66
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Mission_OldWindmill_00_RemoveBrokenWings",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_Windmill",
+    [
+     370.67,
+     102.01,
+     223.66
+    ],
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1375908180,
+  "name": "Trigger_RitualSiteDiscovered",
+  "position": [
+   -478.35,
+   -345.22,
+   -41.37
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_RitualSite",
+    [
+     -478.35,
+     -345.22,
+     -41.37
+    ],
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 512192713,
+  "name": "Trigger_CaveBridgeDiscovered",
+  "position": [
+   288.71,
+   84.17,
+   369.49
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Mission_CaveBridge_00_RepairBridge",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_CaveLever",
+    [
+     288.71,
+     84.17,
+     369.49
+    ],
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 711503328,
+  "name": "Trigger_collectBlueprint_LavaShoes",
+  "position": [
+   329.862,
+   50.275,
+   363.174
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockHeatResistentShoes",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 711503328,
+  "name": "Trigger_collectBlueprint_LavaShoes (1)",
+  "position": [
+   252.88,
+   101.21,
+   237.58
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockHeatResistentShoes",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -14529659,
+  "name": "p_Campfire01",
+  "position": [
+   258.12,
+   100.008,
+   244.16
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 2100982440,
+  "name": "Cheat_AllStats",
+  "position": [
+   265.22,
+   100.62,
+   250.94
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Trigger",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1873569067,
+  "name": "Trigger_Straw",
+  "position": [
+   300.47,
+   99.34,
+   283.56
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_HamsterCave_00_Straw",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 1780265180,
+  "name": "p_prop_campfireOn",
+  "position": [
+   260.695,
+   100.426,
+   258.042
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 1199492807,
+  "name": "Trigger_LocationDiscovered_WalnutTree",
+  "position": [
+   328.83,
+   102.819,
+   231.823
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_UnlockTreeWalnut",
+    [
+     328.83,
+     102.819,
+     231.823
+    ],
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIUnlocksThings_WalnutTree",
+    [
+     328.83,
+     102.819,
+     231.823
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -2070629101,
+  "name": "Trigger_LocationDiscovered_ElectroTree",
+  "position": [
+   283.06,
+   116.22,
+   190.34
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_UnlockTreeElectro",
+    [
+     283.06,
+     116.22,
+     190.34
+    ],
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIUnlocksThings_ElectroTree",
+    [
+     283.06,
+     116.22,
+     190.34
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1933468780,
+  "name": "p_trigger_CollectFiles",
+  "position": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "Trigger",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    "Trigger",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 1279103047,
+  "name": "Trigger_HamsterIntro",
+  "position": [
+   387.64,
+   70.28,
+   363.23
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Mission_HamsterCave_00_Intro",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1384123748,
+  "name": "Trigger_DuckHouseTooEarly",
+  "position": [
+   277.55,
+   116.24,
+   158.61
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_Ducks_00_IntroTooEarly",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -208254285,
+  "name": "Trigger_SirWorcestershireMission",
+  "position": [
+   337.63,
+   97.95,
+   307.2
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Mission_SirWorcestershire_00_Intro",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -253096128,
+  "name": "Trigger_ExitDungeon",
+  "position": [
+   -477.11,
+   -342.43,
+   -14.38
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Mission_Ducks_99_RemoveCandleFlamsAndPostPro",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 696113498,
+  "name": "Trigger_CultIntroduction",
+  "position": [
+   -477.077,
+   -333.936,
+   -57.64
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_Ducks_01_1_CultAlpha",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1288339359,
+  "name": "p_trigger_ControlSpace",
+  "position": [
+   130.421,
+   110.112,
+   95.252
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "Mission_01_ControlJump",
+    [
+     130.421,
+     110.112,
+     95.252
+    ],
+    -528256167
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1265365997,
+  "name": "Trigger_LocationDiscovered_MetalTree",
+  "position": [
+   381.86,
+   49.175,
+   367.43
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_UnlockTreeMetal",
+    [
+     381.86,
+     49.175,
+     367.43
+    ],
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIUnlocksThings_MetalTree",
+    [
+     381.86,
+     49.175,
+     367.43
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 1780265180,
+  "name": "p_prop_campfireOn (1)",
+  "position": [
+   303.51,
+   99.966,
+   157.16
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 33468534,
+  "name": "p_trigger_AircraftAirdrop01",
+  "position": [
+   285.267,
+   280.0,
+   249.73
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     274.566,
+     190.6,
+     255.93
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     259.667,
+     190.6,
+     267.63
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     272.066,
+     190.6,
+     277.729
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     282.167,
+     190.6,
+     285.729
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 1366693474,
+  "name": "p_trigger_AircraftAirdrop03",
+  "position": [
+   285.267,
+   300.0,
+   249.73
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     271.667,
+     196.5,
+     264.63
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     250.867,
+     196.5,
+     255.93
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     261.267,
+     196.5,
+     261.33
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     257.467,
+     196.5,
+     273.53
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1190165743,
+  "name": "p_trigger_AircraftAirdrop02",
+  "position": [
+   285.267,
+   320.0,
+   249.73
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     289.267,
+     200.9,
+     269.53
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     288.767,
+     200.9,
+     259.329
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     283.967,
+     200.9,
+     240.53
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "p_prop_AirdropCrate01",
+    [
+     262.267,
+     200.9,
+     231.43
+    ],
+    1301544614
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1218703197,
+  "name": "Trigger_LocationDiscovered_CaveArea",
+  "position": [
+   284.47,
+   102.303,
+   316.79
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_CaveArea",
+    [
+     284.47,
+     102.303,
+     316.79
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1519521221,
+  "name": "Trigger_collectBlueprint_Furnace",
+  "position": [
+   279.929,
+   84.426,
+   367.118
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_Crafter_Furnace",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1519521221,
+  "name": "Trigger_collectBlueprint_Furnace (1)",
+  "position": [
+   250.5,
+   100.95,
+   238.35
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_Crafter_Furnace",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": -1924821466,
+  "name": "Mission_BeaverCave_00_SpawnTrigger",
+  "position": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    "TriggerAreaEntrance",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    "TriggerAreaHole",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "TriggerAreaEntrance",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "TriggerAreaHole",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level3",
+  "assetID": 371206692,
+  "name": "p_trigger_ControlSprint",
+  "position": [
+   123.316,
+   110.659,
+   89.693
+  ],
+  "actions": [
+   [
+    "OnTrigger_SpawnObject",
+    "Mission_ControlSprint",
+    [
+     123.316,
+     110.659,
+     89.693
+    ],
+    -1422909243
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 1064355831,
+  "name": "p_trigger_EnterDevRoomAchievement",
+  "position": [
+   294.77,
+   103.34,
+   411.07
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockAchievement_EnterDevRoom",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 134970086,
+  "name": "Trigger_WormDialogue",
+  "position": [
+   293.3,
+   101.53,
+   330.99
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_Worm_01_Intro",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -252285554,
+  "name": "Trigger_SnowyMountain",
+  "position": [
+   445.16,
+   137.64,
+   157.65
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_Snowy Mountain",
+    [
+     445.16,
+     137.64,
+     157.65
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 505528342,
+  "name": "Trigger_SnowmanDialogue",
+  "position": [
+   548.04,
+   186.79,
+   261.7
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_Snowman_01_WrongPlace",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 1333163927,
+  "name": "Trigger_collectBlueprint_Furniture_CandyDispenser01",
+  "position": [
+   286.33,
+   85.338,
+   247.084
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_CandyDispenser01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1978300690,
+  "name": "Trigger_collectBlueprint_Furniture_LegSeat01",
+  "position": [
+   373.197,
+   132.59,
+   152.848
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_LegSeat01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 1093480868,
+  "name": "Trigger_collectBlueprint_Furniture_Sled01",
+  "position": [
+   425.664,
+   165.858,
+   265.316
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_Sled01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 839653567,
+  "name": "Trigger_collectBlueprint_Furniture_LifeguardChair01",
+  "position": [
+   477.203,
+   108.135,
+   325.902
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_LifeguardChairAndBuoy01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 1077347373,
+  "name": "Trigger_collectBlueprint_Furniture_Ski01",
+  "position": [
+   598.45,
+   202.314,
+   211.976
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_Ski01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 31997720,
+  "name": "Trigger_collectBlueprint_Furniture_Globes01",
+  "position": [
+   200.66,
+   82.783,
+   382.02
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_Globes01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1214054459,
+  "name": "Trigger_collectBlueprint_Furniture_FaceStool01",
+  "position": [
+   315.718,
+   116.81,
+   148.524
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockFurniture_FaceStool01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 967818511,
+  "name": "Trigger_IceCave",
+  "position": [
+   549.92,
+   190.16,
+   230.41
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_NorthernIceCave",
+    [
+     549.92,
+     190.16,
+     230.41
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -868939779,
+  "name": "Trigger_MountainElevator",
+  "position": [
+   516.78,
+   205.21,
+   223.66
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_NorthernIceCave",
+    [
+     516.78,
+     205.21,
+     223.66
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 1876437570,
+  "name": "Trigger_TechBridgeMission",
+  "position": [
+   378.68,
+   120.88,
+   135.79
+  ],
+  "actions": [
+   [
+    "OnTrigger_StartMission",
+    "Mission_01A_InsertBatterie01",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_01B_InsertBatterie02",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_02_CheckIfEverythingBuilt",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 184033913,
+  "name": "Trigger_InsideChesterDialogue",
+  "position": [
+   244.165,
+   104.624,
+   504.65
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_ChesterCollectables_05_InsideChester",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 1184718133,
+  "name": "Trigger_MountainPeak",
+  "position": [
+   507.82,
+   240.98,
+   223.93
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_MountainPeak",
+    [
+     507.82,
+     240.98,
+     223.93
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1452023516,
+  "name": "Trigger_MountainDamageZones",
+  "position": [
+   428.95,
+   147.49,
+   209.71
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_SnowMountainDamageZones_01",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -825111714,
+  "name": "p_trigger_EnterBeaverCaveAchievement",
+  "position": [
+   327.3,
+   103.05,
+   176.79
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockAchievement_EnterBeaverCave",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 523659251,
+  "name": "Trigger_PenguinMission",
+  "position": [
+   569.11,
+   193.26,
+   172.24
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_Penguin_01_Help",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 442663072,
+  "name": "p_Animal_PracticeDummy02 (2)",
+  "position": [
+   296.091,
+   116.34,
+   152.909
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1049631217,
+  "name": "p_Animal_PracticeDummy01 (1)",
+  "position": [
+   294.54,
+   130.75,
+   106.94
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1049631217,
+  "name": "p_Animal_PracticeDummy01",
+  "position": [
+   265.059,
+   113.625,
+   175.481
+  ],
+  "actions": [
+   [
+    "OnTrigger_SetAIBrainTarget",
+    "OnTrigger_SetTarget",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 661980554,
+  "name": "Trigger_LocationDiscovered_BeachArea",
+  "position": [
+   406.5,
+   99.781,
+   320.4
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_SpawnObject",
+    "UIAreaDiscovered_BeachArea",
+    [
+     406.5,
+     99.781,
+     320.4
+    ],
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 421669597,
+  "name": "p_CampfireCrafter02",
+  "position": [
+   449.183,
+   186.593,
+   268.344
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    "ThickerArea",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1701796399,
+  "name": "p_CampfireCrafter03",
+  "position": [
+   448.862,
+   186.674,
+   218.836
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    "DamageArea03",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 2046673210,
+  "name": "p_CampfireCrafter01",
+  "position": [
+   422.368,
+   152.822,
+   208.053
+  ],
+  "actions": [
+   [
+    "OnTrigger_ChangeHealth",
+    "ThickerArea",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": 192954490,
+  "name": "Trigger_CrabDialogue",
+  "position": [
+   448.98,
+   101.14,
+   376.98
+  ],
+  "actions": [
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_FitnessCrab_01_ANewContender",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -1592462402,
+  "name": "p_trigger_DialogueGenovaTechLab",
+  "position": [
+   407.09,
+   129.918,
+   274.36
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    "Trigger",
+    null,
+    null
+   ],
+   [
+    "OnTrigger_ShowDialogue",
+    "Trigger",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level4",
+  "assetID": -429766240,
+  "name": "Trigger_MountainDamageZones02",
+  "position": [
+   452.1,
+   187.232,
+   225.51
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_ShowDialogue",
+    "Dialogue_SnowMountainDamageZones_02",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level7",
+  "assetID": 621475807,
+  "name": "p_trigger_ReachMountainTopAchievement",
+  "position": [
+   518.15,
+   242.93,
+   223.9
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockAchievement_ReachMountainTop",
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level15",
+  "assetID": 1896645273,
+  "name": "p_trigger_PutItemInGlobalInventory (3)",
+  "position": [
+   -493.0,
+   -521.3,
+   -133.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_PutItemInInventory",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level15",
+  "assetID": 1896645273,
+  "name": "p_trigger_PutItemInGlobalInventory (1)",
+  "position": [
+   986.0,
+   129.6,
+   208.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_PutItemInInventory",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level15",
+  "assetID": 1896645273,
+  "name": "p_trigger_PutItemInGlobalInventory (4)",
+  "position": [
+   377.8,
+   35.6,
+   256.1
+  ],
+  "actions": [
+   [
+    "OnTrigger_PutItemInInventory",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level15",
+  "assetID": 1896645273,
+  "name": "p_trigger_PutItemInGlobalInventory",
+  "position": [
+   410.0,
+   -1.4,
+   272.0
+  ],
+  "actions": [
+   [
+    "OnTrigger_PutItemInInventory",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level15",
+  "assetID": 1896645273,
+  "name": "p_trigger_PutItemInGlobalInventory (2)",
+  "position": [
+   223.5,
+   54.8,
+   239.6
+  ],
+  "actions": [
+   [
+    "OnTrigger_PutItemInInventory",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "scene": "level16",
+  "assetID": -2065138190,
+  "name": "p_trigger_EnterHellAchievement",
+  "position": [
+   955.739,
+   159.934,
+   180.789
+  ],
+  "actions": [
+   [
+    "OnTrigger_DestroyObject",
+    null,
+    null,
+    null
+   ],
+   [
+    "OnTrigger_StartMission",
+    "Mission_UnlockAchievement_EnterHell",
+    null,
+    null
+   ]
+  ]
+ }
+]

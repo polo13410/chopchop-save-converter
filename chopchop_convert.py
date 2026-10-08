@@ -77,7 +77,7 @@ def self_test():
         data = f.read()
     assert odin_binary.encode(odin_binary.decode(data)) == data
     for name in ("catalog-demo.csv", "catalog-full.csv", "scene-demo.csv", "scene-full.csv",
-                 "missions-demo.json", "missions-full.json"):
+                 "missions-demo.json", "missions-full.json", "triggers-demo.json", "triggers-full.json"):
         assert os.path.getsize(os.path.join(data_dir(), name)) > 0, name
     print("Self-test OK")
 

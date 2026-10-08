@@ -23,9 +23,13 @@ Three steps:
    would never happen, so they are applied: missions to start (with their own
    start actions, which the game does not run for a mission loaded from a
    save), recipes to unlock, reward objects at their spawn point.
+
+4. apply_trigger_additions: the same for zone triggers (objects that act when
+   the player walks into them, then destroy themselves) the demo already fired.
 """
 
 import json
+import math
 import struct
 from collections import defaultdict
 
@@ -323,15 +327,122 @@ def _reverse(catalog):
     return out
 
 
-def apply_full_additions(base, catalog_demo, catalog_full, missions_demo, missions_full,
-                         started, completed, log, skip_missions=frozenset()):
+class Additions:
+    """Applies full-game actions to the converted save: start missions, spawn objects, unlock recipes."""
+
+    def __init__(self, base, catalog_demo, catalog_full, missions_full, completed, skip_missions=frozenset()):
+        self.base = base
+        self.ids_full, self.ids_demo = _reverse(catalog_full), _reverse(catalog_demo)
+        self.missions_full = missions_full
+        self.skip_missions = skip_missions
+        self.view = W.SaveView(base)
+        objs = self.view.objects()
+        self.present = {_asset(objs[k]) for k in self.view.mission_ids()}
+        self.known_done = {self.ids_demo.get(n) for n in completed}
+        self.present_assets = {_asset(o) for o in objs.values()}
+        self.current = T.field(T.service(base, "Service.WorldObject.ServiceData"), "currentID")
+        self.world_arr = T.array_of(self.view.world)
+        self.mission_arr = T.array_of(self.view.dicts["Mission.Mission+SaveData"])
+        self.started, self.recipes, self.spawned, self.skipped_spawn, self.removed = [], [], [], [], []
+
+    def _new_id(self):
+        wid = self.current["v"]
+        self.current["v"] += 1
+        return wid
+
+    def spawn(self, target, position, near_only=False, asset=None):
+        """Create an object at a spawn point, unless one already exists (anywhere, or nearby)."""
+        asset = asset if asset is not None else self.ids_full.get(target)
+        if asset is None or position is None:
+            self.skipped_spawn.append(target)
+            return
+        if near_only:
+            for pair in self.world_arr["c"]:
+                a, pos = W.asset_pos(pair["c"][1])
+                if a == asset and math.dist(pos, position) < 1.0:
+                    return
+        elif asset in self.present_assets:
+            return
+        self.world_arr["c"].append(new_world_object(self._new_id(), asset, position=tuple(position)))
+        self.present_assets.add(asset)
+        self.spawned.append(target)
+
+    def remove_near(self, target, position, radius=1.0, asset=None):
+        """Remove the objects of one kind near a spot, with all their data."""
+        asset = asset if asset is not None else self.ids_full.get(target)
+        if asset is None or position is None:
+            return
+        doomed = {pair["c"][0]["v"] for pair in self.world_arr["c"]
+                  if W.asset_pos(pair["c"][1])[0] == asset
+                  and math.dist(W.asset_pos(pair["c"][1])[1], position) < radius}
+        if not doomed:
+            return
+        for node in self.view.dicts.values():
+            arr = T.array_of(node)
+            arr["c"] = [p for p in arr["c"] if p["c"][0]["v"] not in doomed]
+        self.removed.extend([target] * len(doomed))
+
+    def start(self, target):
+        """Insert a started mission and run its start actions, which the game
+        does not run for a mission loaded from a save."""
+        asset = self.ids_full.get(target)
+        if (asset is None or target in self.skip_missions or asset in self.present
+                or asset in self.known_done or target not in self.missions_full):
+            return
+        wid = self._new_id()
+        self.world_arr["c"].append(new_world_object(wid, asset, [MISSION_COMPONENT]))
+        self.mission_arr["c"].append(new_mission_data(wid, self.missions_full[target]["checks"]))
+        self.present.add(asset)
+        self.started.append(target)
+        positions = self.missions_full[target].get("spawn_positions", {})
+        for i, (group, cls, child) in enumerate(self.missions_full[target]["actions"]):
+            if group == START:
+                self.apply_mission_action(cls, child, positions.get(str(i)))
+
+    def apply_mission_action(self, cls, target, position):
+        if cls == "MissionAction_StartMission":
+            self.start(target)
+        elif cls == "MissionAction_UnLockRecipe":
+            asset = self.ids_full.get(target)
+            if asset is not None:
+                self.recipes.append(asset)
+        elif cls == "MissionAction_SpawnObject":
+            self.spawn(target, position)
+
+    def finish(self, log):
+        for node in self.view.dicts.values():
+            arr = T.array_of(node)
+            arr["len"] = len(arr["c"])
+        if self.recipes:
+            node = T.array_of(T.field(T.service(self.base, "Service.Recipe.ServiceData"), "unlockedRecipes"))
+            have = {e["v"] for e in node["c"]}
+            for r in self.recipes:
+                if r not in have:
+                    node["c"].append({"t": "int", "v": r})
+                    have.add(r)
+            node["len"] = len(node["c"])
+        log(f"Full-game additions: {len(self.started)} missions started")
+        for m in self.started:
+            log(f"  + {m}")
+        if self.recipes:
+            log(f"Recipes added by the full game: {len(self.recipes)}")
+        if self.spawned:
+            log("Objects added by the full game: " + ", ".join(self.spawned))
+        if self.removed:
+            log("Demo objects replaced by their full-game version: " + ", ".join(self.removed))
+        if self.skipped_spawn:
+            log("Full-game objects not created (unknown position): " + ", ".join(sorted(set(self.skipped_spawn))))
+
+
+def apply_full_additions(adds, catalog_demo, catalog_full, missions_demo, missions_full, started, completed, log):
+    """Missions the demo ran: apply the actions the full game added to them."""
     ids_full, ids_demo = _reverse(catalog_full), _reverse(catalog_demo)
 
     # Actions are compared by assetID: some missions were only renamed.
     def key(group, cls, target, ids):
         return group, cls, (ids.get(target, target) if target else None)
 
-    added = []
+    count = 0
     for name in sorted(started):
         if name not in missions_full or name not in missions_demo:
             continue
@@ -339,89 +450,67 @@ def apply_full_additions(base, catalog_demo, catalog_full, missions_demo, missio
         demo_keys = {key(*a, ids_demo) for a in missions_demo[name]["actions"]}
         positions = missions_full[name].get("spawn_positions", {})
         for i, (group, cls, target) in enumerate(missions_full[name]["actions"]):
-            if group in groups and key(group, cls, target, ids_full) not in demo_keys:
-                added.append((name, group, cls, target, positions.get(str(i))))
+            if group not in groups or key(group, cls, target, ids_full) in demo_keys:
+                continue
+            # Objects spawned when a mission (long finished in the demo) started are usually
+            # temporary (sounds, triggers): only end-of-mission rewards are kept.
+            if cls == "MissionAction_SpawnObject" and group != SUCCESS:
+                continue
+            adds.apply_mission_action(cls, target, positions.get(str(i)))
+            count += 1
+    log(f"Missions: {len(started)} missions ran in the demo, {count} full-game additions to them")
 
-    B = W.SaveView(base)
-    b_objs = B.objects()
-    present = {_asset(b_objs[k]) for k in B.mission_ids()}
-    known_done = {ids_demo.get(n) for n in completed}
-    current = T.field(T.service(base, "Service.WorldObject.ServiceData"), "currentID")
-    world_arr = T.array_of(B.world)
-    mission_arr = T.array_of(B.dicts["Mission.Mission+SaveData"])
-    present_assets = {_asset(o) for o in b_objs.values()}
-    started_new, recipes_new, skipped_spawn, spawned = [], [], [], []
 
-    def spawn(target, position):
-        asset = ids_full.get(target)
-        if asset is None or position is None:
-            skipped_spawn.append(target)
-            return
-        if asset in present_assets:
-            return
-        wid = current["v"]
-        current["v"] += 1
-        world_arr["c"].append(new_world_object(wid, asset, position=tuple(position)))
-        present_assets.add(asset)
-        spawned.append(target)
+def apply_trigger_additions(adds, demo, triggers_demo, triggers_full, log):
+    """Zone triggers the demo fired: apply the actions the full game added to them.
 
-    def start(target):
-        """Insert a started mission and run its start actions, which the game
-        does not run for a mission loaded from a save."""
-        asset = ids_full.get(target)
-        if (asset is None or target in skip_missions or asset in present or asset in known_done
-                or target not in missions_full):
-            return
-        wid = current["v"]
-        current["v"] += 1
-        world_arr["c"].append(new_world_object(wid, asset, [MISSION_COMPONENT]))
-        mission_arr["c"].append(new_mission_data(wid, missions_full[target]["checks"]))
-        present.add(asset)
-        started_new.append(target)
-        positions = missions_full[target].get("spawn_positions", {})
-        for i, (group, cls, child) in enumerate(missions_full[target]["actions"]):
-            if group == START:
-                apply(cls, child, positions.get(str(i)))
+    A trigger is a world object that does something when the player walks into
+    it, then destroys itself. The lab discovery trigger, for example, spawns the
+    door battery holders and starts the lab missions in the full game only. If
+    the demo already fired it, those would never happen.
+    """
+    ids_full, ids_demo = adds.ids_full, adds.ids_demo
+    demo_objs = W.SaveView(demo).objects()
+    conv_objs = {pair["c"][0]["v"]: pair["c"][1] for pair in adds.world_arr["c"]}
 
-    def apply(cls, target, position):
-        if cls == "MissionAction_StartMission":
-            start(target)
-        elif cls == "MissionAction_UnLockRecipe":
-            asset = ids_full.get(target)
-            if asset is not None:
-                recipes_new.append(asset)
-        elif cls == "MissionAction_SpawnObject":
-            spawn(target, position)
+    def present(objs, t):
+        ref = W.Matcher([(t["assetID"], tuple(t["position"]))])
+        return bool(ref.match_all({k: W.asset_pos(o) for k, o in objs.items()}))
 
-    for source, group, cls, target, position in added:
-        # Objects spawned when a mission (long finished in the demo) started are usually
-        # temporary (sounds, triggers): only end-of-mission rewards are kept.
-        if cls == "MissionAction_SpawnObject" and group != SUCCESS:
-            continue
-        apply(cls, target, position)
-    world_arr["len"] = len(world_arr["c"])
-    mission_arr["len"] = len(mission_arr["c"])
+    def key(action, ids):
+        cls, target = action[0], action[1]
+        # Spawning a mission object and starting that mission are the same thing.
+        if cls == "OnTrigger_SpawnObject" and target and target.startswith("Mission"):
+            cls = "OnTrigger_StartMission"
+        return cls, (action[3] if action[3] is not None else ids.get(target, target) if target else None)
 
-    if recipes_new:
-        node = T.array_of(T.field(T.service(base, "Service.Recipe.ServiceData"), "unlockedRecipes"))
-        have = {e["v"] for e in node["c"]}
-        for r in recipes_new:
-            if r not in have:
-                node["c"].append({"t": "int", "v": r})
-                have.add(r)
-        node["len"] = len(node["c"])
-
-    log(f"Full-game missions: {len(started)} missions ran in the demo, "
-        f"{len(started_new)} missions added by the full game started")
-    for m in started_new:
-        log(f"  + {m}")
-    if recipes_new:
-        log(f"Recipes added by the full game: {len(recipes_new)}")
-    if spawned:
-        log("Reward objects added by the full game: " + ", ".join(spawned))
-    if skipped_spawn:
-        log("Full-game reward objects not created (unknown position): "
-            + ", ".join(sorted(set(skipped_spawn))))
+    full_index = W.Matcher([(t["assetID"], tuple(t["position"])) for t in triggers_full]).match_all(
+        {i: (t["assetID"], tuple(t["position"])) for i, t in enumerate(triggers_demo)})
+    fired = 0
+    for i, td in enumerate(triggers_demo):
+        if i not in full_index or present(demo_objs, td):
+            continue  # not in the full game, or not fired in the demo
+        tf = triggers_full[full_index[i]]
+        if present(conv_objs, tf):
+            continue  # still in the converted save: the game will fire it
+        demo_keys = {key(a, ids_demo) for a in td["actions"]}
+        full_keys = {key(a, ids_full) for a in tf["actions"]}
+        removed = [a for a in td["actions"] if key(a, ids_demo) not in full_keys]
+        added = [a for a in tf["actions"] if key(a, ids_full) not in demo_keys]
+        if added:
+            fired += 1
+        for action in added:
+            kind, _ = key(action, ids_full)
+            target, position, asset = action[1], action[2], action[3]
+            if kind == "OnTrigger_StartMission":
+                adds.start(target)
+            elif kind == "OnTrigger_SpawnObject":
+                # A demo object spawned at the same spot is the old version of this one.
+                for old in removed:
+                    if old[0] == "OnTrigger_SpawnObject" and old[2] and math.dist(old[2], position) < 0.5:
+                        adds.remove_near(old[1], old[2], asset=old[3])
+                adds.spawn(target, position, near_only=True, asset=asset)
+    log(f"Triggers: {fired} triggers fired in the demo do more in the full game")
 
 
 def ensure_tutorial_marker(base, catalog_full, started, log):

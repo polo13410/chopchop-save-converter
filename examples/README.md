@@ -18,9 +18,9 @@ These are real saves from the author's playthrough, so you can see what the conv
 | Unlocked shop items | 26 | 28 | 35 |
 | Unlocked board missions | 25 | 0 | 25 |
 | Running board missions | 3 | 0 | 3 |
-| Active missions (incl. hidden) | 48 | 105 | 110 |
+| Active missions (incl. hidden) | 48 | 105 | 111 |
 | Strength / stamina / move speed | 3.02 / 100 / 1.40 | 1.00 / 100 / 1.00 | 3.02 / 100 / 1.40 |
-| World objects | 1160 | 1479 | 1552 |
+| World objects | 1160 | 1479 | 1555 |
 | Trees standing | 325 | 358 | 357 |
 | Player position | (265, 100, 252) | (265, 100, 251) | (265, 100, 252) |
 | Tutorial finished marker | no | no | yes |
@@ -29,8 +29,8 @@ How to read it:
 
 - **Money, backpack, board missions and skills** come straight from the demo.
 - **Recipes and shop items** are the demo's plus the ones the full game gives from the start, plus 4 recipes the full game added to missions the demo completed.
-- **Active missions** are the demo's, plus the full game's own background missions (achievements, recipe unlocks...), plus 17 missions the full game added on top of missions the demo already ran (city upgrades, new audiences...).
-- **World objects and trees**: the full game has a bigger map. The demo area takes its state from the demo save (cut trees stay cut), and the new areas come from the full game.
+- **Active missions** are the demo's, plus the full game's own background missions (achievements, recipe unlocks...), plus 18 missions the full game added on top of missions and zone triggers the demo already ran (city upgrades, new audiences, the lab door repair...).
+- **World objects and trees**: the full game has a bigger map. The demo area takes its state from the demo save (cut trees stay cut), and the new areas come from the full game. The lab gets its full-game door battery holders.
 - **Tutorial finished marker**: added because the demo finished the tutorial; some full-game missions wait for it.
 
 ## Try it yourself
