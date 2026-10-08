@@ -1,7 +1,9 @@
 """Extract the world objects placed in the game scenes (initial state of the map).
 
 For each WorldObject component found in the level* files, write its assetID
-and its position in the world (with the Transform hierarchy applied).
+its position in the world (with the Transform hierarchy applied), and whether
+it is active when the game starts (inactive objects are enabled later by
+missions, and are not saved until then).
 Comparing a save to this initial state tells what the player changed.
 
 Usage (requires UnityPy):
@@ -80,6 +82,13 @@ def extract(data_dir):
             go = mb.m_GameObject.read()
             tr = go.m_Transform.read()
             (x, y, z), _, _ = world_transform(tr, cache)
+            # Active at the start: the GameObject and all its parents are active.
+            active = 1 if go.m_IsActive else 0
+            node = tr
+            while active and node.m_Father and node.m_Father.path_id:
+                node = node.m_Father.read()
+                if not node.m_GameObject.read().m_IsActive:
+                    active = 0
             # A WorldObject under another WorldObject is a child (childWorldObjects).
             parent_wo = 0
             father = tr.m_Father
@@ -98,14 +107,14 @@ def extract(data_dir):
                     break
                 father = ftr.m_Father
             rows.append((os.path.basename(path), asset_id, round(x, 3), round(y, 3), round(z, 3),
-                         flag, parent_wo, go.m_Name))
+                         flag, parent_wo, active, go.m_Name))
     return rows
 
 
 def write(rows, out):
     with open(out, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["scene", "assetID", "x", "y", "z", "flag", "under_worldobject", "name"])
+        w.writerow(["scene", "assetID", "x", "y", "z", "flag", "under_worldobject", "active", "name"])
         w.writerows(rows)
 
 

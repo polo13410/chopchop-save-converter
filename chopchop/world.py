@@ -11,7 +11,10 @@ Rules, for every object (missions and the player are handled separately):
 
 Objects of the base save (full game):
 - on the full-game map AND on the demo map: keeps its number and takes the
-  demo state, or is removed if it was destroyed in the demo (a cut tree...);
+  demo state, or is removed if it was destroyed in the demo (a cut tree...).
+  An object missing from the demo save only counts as destroyed if it was
+  active when the demo starts: inactive objects are not saved until a mission
+  enables them, so a missing one may simply never have been enabled;
 - only on the full-game map: kept (new content);
 - spawned during play (on neither map): removed if the demo knows its type,
   kept otherwise.
@@ -44,9 +47,16 @@ PLAYER_TYPES = ("Player.Player+SaveData", "Player.PlayerStats+SaveData",
 
 
 def load_scene(path):
+    """Saved scene objects: [(assetID, position)]."""
     with open(path, encoding="utf-8") as f:
         return [(int(r["assetID"]), (float(r["x"]), float(r["y"]), float(r["z"])))
                 for r in csv.DictReader(f) if r["flag"] == "1"]
+
+
+def load_scene_active(path):
+    """Same order as load_scene: whether each object is active when the game starts."""
+    with open(path, encoding="utf-8") as f:
+        return [r.get("active", "1") == "1" for r in csv.DictReader(f) if r["flag"] == "1"]
 
 
 class Matcher:
@@ -198,7 +208,7 @@ def ensure_automated_crafters(base, catalog_full, log):
 
 def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
                    scene_demo, scene_full, log, mission_children=None,
-                   prefab_assets=frozenset(), skip_names=frozenset()):
+                   prefab_assets=frozenset(), skip_names=frozenset(), demo_active=None):
     D, B = SaveView(demo), SaveView(base)
     d_objs, b_objs = D.objects(), B.objects()
     d_player, b_player = D.player_id(), B.player_id()
@@ -228,6 +238,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
     # them by that number, so the base number is kept and the demo state copied in.
     inplace = {}  # base id -> demo id
     drop = set()
+    never_enabled = 0
     for k, o in b_objs.items():
         if k in b_protect:
             continue
@@ -236,7 +247,10 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             if sf in sf_to_sd:
                 dk = sd_to_d.get(sf_to_sd[sf])
                 if dk is None:
-                    drop.add(k)  # destroyed in the demo
+                    if demo_active is None or demo_active[sf_to_sd[sf]]:
+                        drop.add(k)  # destroyed in the demo
+                    else:
+                        never_enabled += 1  # inactive in the demo and never enabled: keep it
                 else:
                     inplace[k] = dk
             elif sf in sf_destroyed_moved:
@@ -281,7 +295,8 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         add.append(k)
 
     log(f"World: {len(b_objs)} objects in the base save: {len(inplace)} set to their demo state, "
-        f"{len(drop)} removed (destroyed in the demo), {len(kept)} kept as they are")
+        f"{len(drop)} removed (destroyed in the demo), {len(kept)} kept as they are "
+        f"({never_enabled} of them never enabled in the demo)")
     log(f"World: {len(moved)} objects moved between versions, {len(sf_destroyed_moved)} of them "
         f"destroyed in the demo; {kept_moved} kept at their new spot")
     log(f"World: {len(add)} objects added (spawned during the demo, or inactive at the start of the "

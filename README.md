@@ -114,7 +114,8 @@ The full game reuses the demo map, so objects can be matched by **type and posit
 | Demo map | Full map | Demo save | Result |
 |---|---|---|---|
 | yes | yes | present | the full-game object keeps its number and takes the demo state |
-| yes | yes | missing | destroyed in the demo (a cut tree): removed |
+| yes | yes | missing | destroyed in the demo (a cut tree): removed, but only if it was active when the demo starts |
+| yes, inactive at the start | yes, active | missing | never enabled in the demo (the wood elevator build slot): the full-game version is kept |
 | yes | moved by up to 3 m | | the full-game version stays at its new spot, unless destroyed in the demo |
 | yes | no | | the full game changed that spot: the full game wins |
 | no | no | present | spawned during the demo (a building, a dropped item): added with a new number |
@@ -123,7 +124,7 @@ The full game reuses the demo map, so objects can be matched by **type and posit
 Two lessons learned the hard way, from the game log and the decompiled game code (read with [dnfile](https://github.com/malwarefrank/dnfile) and [dncil](https://github.com/mandiant/dncil)):
 
 - **Scene objects must keep their number.** Within one version, objects placed in the scenes always get the same worldObjectID, and the game finds them by that number when loading. The first version renumbered them and the game hung on the loading screen.
-- **Some scene objects are inactive at the start of the full game** (the cabin, the workbench) and are not in a fresh full-game save. They are recreated from their prefab.
+- **Some scene objects are inactive at the start** and are only saved once a mission enables them. The cabin and the workbench are inactive in both versions, so they are recreated from their prefab. The wood elevator build slot is inactive in the demo but active from the start in the full game: missing from the demo save does not mean destroyed there. [`tools/extract_scene.py`](tools/extract_scene.py) records which objects are active at the start.
 
 Links between objects are renumbered too: inventories, machines pointing at the object that holds their inventory, child objects, and objects owned by missions.
 

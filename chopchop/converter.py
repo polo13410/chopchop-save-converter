@@ -96,7 +96,8 @@ def convert(demo_bytes, base_bytes=None, with_world=True, log=print, data=None):
             demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             world.load_scene(_path("scene-demo.csv", data)), world.load_scene(_path("scene-full.csv", data)),
             log, mission_children,
-            prefab_assets=load_prefabs(_path("catalog-full.csv", data)), skip_names=SKIP_DEMO_OBJECTS)
+            prefab_assets=load_prefabs(_path("catalog-full.csv", data)), skip_names=SKIP_DEMO_OBJECTS,
+            demo_active=world.load_scene_active(_path("scene-demo.csv", data)))
 
     missions_demo = missions.load_definitions(_path("missions-demo.json", data))
     missions_full = missions.load_definitions(_path("missions-full.json", data))

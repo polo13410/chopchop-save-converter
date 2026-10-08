@@ -20,7 +20,7 @@ These are real saves from the author's playthrough, so you can see what the conv
 | Running board missions | 3 | 0 | 3 |
 | Active missions (incl. hidden) | 48 | 105 | 111 |
 | Strength / stamina / move speed | 3.02 / 100 / 1.40 | 1.00 / 100 / 1.00 | 3.02 / 100 / 1.40 |
-| World objects | 1160 | 1479 | 1552 |
+| World objects | 1160 | 1479 | 1553 |
 | Trees standing | 325 | 358 | 357 |
 | Player position | (265, 100, 252) | (265, 100, 251) | (265, 100, 252) |
 | Tutorial finished marker | no | no | yes |
