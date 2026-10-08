@@ -24,9 +24,18 @@ import copy
 import csv
 import sys
 
+import mission_apply
+import mission_graph
 import odin_binary
 import odin_tree as T
 import world
+
+# Contenu déplacé par les développeurs entre la démo et le jeu complet : on suit le jeu complet.
+# Le téléporteur de la zone 2 mène maintenant à la montagne, depuis un autre emplacement ;
+# il est à reconstruire, et les portes de l'ancien emplacement ne sont pas transférées.
+KEEP_BASE_MISSIONS = {"Mission_Area2_TP_CheckIfBuild"}
+SKIP_DEMO_MISSIONS = {"Mission_Area2_CheckForDoorbellDestroy", "Mission_Area2_StayCloseTP"}
+SKIP_DEMO_OBJECTS = {"Teleporter_Closed", "p_teleporter_Area2_DoorbellCollider"}
 
 MISSION_COMPONENT = 17
 
@@ -39,6 +48,13 @@ def load(path):
 def load_catalog(path):
     with open(path, encoding="utf-8") as f:
         return {int(r["assetID"]): r["nom"] for r in csv.DictReader(f)}
+
+
+def load_prefabs(path):
+    """assetID des objets du monde qui existent comme prefab (le jeu peut les recréer)."""
+    with open(path, encoding="utf-8") as f:
+        return {int(r["assetID"]) for r in csv.DictReader(f)
+                if r["categorie"] == "WorldObject" and r["fichier"] == "resources.assets"}
 
 
 def int_set(node):
@@ -196,7 +212,7 @@ def transfer_missions(demo, base, catalog_demo, catalog_full, log):
     base_checks = {}  # assetID -> nœud Mission+SaveData de la base
     for key, value, pair in T.dict_pairs(b_missions):
         base_checks[asset(b_obj[key])] = value
-        if asset(b_obj[key]) in catalog_demo:
+        if asset(b_obj[key]) in catalog_demo and catalog_full.get(asset(b_obj[key])) not in KEEP_BASE_MISSIONS:
             removed.add(key)
         else:
             keep.append(pair)
@@ -215,8 +231,8 @@ def transfer_missions(demo, base, catalog_demo, catalog_full, log):
     skipped_unknown = 0
     for key, value, pair in T.dict_pairs(d_missions):
         obj = d_obj[key]
-        if asset(obj) not in catalog_full:
-            skipped_unknown += 1  # ex. panneau de fin de démo
+        if asset(obj) not in catalog_full or catalog_full.get(asset(obj)) in SKIP_DEMO_MISSIONS | KEEP_BASE_MISSIONS:
+            skipped_unknown += 1  # ex. panneau de fin de démo, téléporteur déplacé
             continue
         new_id = current["v"]
         current["v"] += 1
@@ -249,7 +265,7 @@ def transfer_missions(demo, base, catalog_demo, catalog_full, log):
     T.array_of(b_missions)["len"] = len(mission_pairs)
     log(f"Missions : {len(remap)} missions de la démo ajoutées, "
         f"dont {reset} avec les conditions du jeu complet (remises à zéro), "
-        f"{skipped_unknown} propres à la démo ignorées")
+        f"{skipped_unknown} propres à la démo ou à du contenu déplacé ignorées")
 
     # 3. Tableau des missions.
     d_board = T.service(demo, "Service.MissionBoard.ServiceData")
@@ -294,6 +310,8 @@ def main():
     p.add_argument("--catalog-full", default="catalog/complet.csv")
     p.add_argument("--scene-demo", default="catalog/scene-demo.csv")
     p.add_argument("--scene-full", default="catalog/scene-complet.csv")
+    p.add_argument("--missions-demo", default="catalog/missions-demo.json")
+    p.add_argument("--missions-full", default="catalog/missions-complet.json")
     p.add_argument("--sans-monde", action="store_true", help="ne transfère pas les objets du monde (version 1)")
     args = p.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
@@ -317,7 +335,15 @@ def main():
     if not args.sans_monde:
         world.transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
                              world.load_scene(args.scene_demo), world.load_scene(args.scene_full), log,
-                             mission_children, catalog_full)
+                             mission_children, catalog_full,
+                             prefab_assets=load_prefabs(args.catalog_full), skip_names=SKIP_DEMO_OBJECTS)
+
+    missions_demo = mission_graph.load(args.missions_demo)
+    missions_full = mission_graph.load(args.missions_full)
+    started, completed = mission_apply.demo_progress(demo, catalog_demo, missions_demo)
+    mission_apply.apply_full_additions(base, catalog_demo, catalog_full, missions_demo, missions_full,
+                                       started, completed, log, skip_missions=KEEP_BASE_MISSIONS)
+    mission_apply.ensure_tutorial_marker(base, catalog_full, started, log)
 
     T.renumber(base, originals)
     data = odin_binary.encode(base)

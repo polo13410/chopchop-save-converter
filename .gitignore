@@ -5,3 +5,4 @@ work/
 __pycache__/
 .venv/
 !catalog/*.csv
+!catalog/*.json

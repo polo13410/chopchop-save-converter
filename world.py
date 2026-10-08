@@ -196,7 +196,8 @@ def ensure_automated_crafters(base, catalog_names, log):
 
 
 def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
-                   scene_demo, scene_full, log, mission_children=None, catalog_names=None):
+                   scene_demo, scene_full, log, mission_children=None, catalog_names=None,
+                   prefab_assets=frozenset(), skip_names=frozenset()):
     D, B = SaveView(demo), SaveView(base)
     d_objs, b_objs = D.objects(), B.objects()
     d_player, b_player = D.player_id(), B.player_id()
@@ -246,6 +247,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
 
     # 2. Objets apparus en jeu dans la démo : ajoutés avec un nouveau numéro.
     add, ignored_changed, ignored_unknown, ignored_absent, dedup, kept_moved = [], 0, 0, 0, 0, 0
+    absent_added = 0
     kept_matcher = Matcher(list(kept.values()))
     seen_dynamic = set()
     inplace_demo = set(inplace.values())
@@ -253,18 +255,23 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         if k in d_skip or k in inplace_demo:
             continue
         asset, pos = asset_pos(o)
-        if asset not in catalog_full:
+        if asset not in catalog_full or catalog_full.get(asset) in skip_names:
             ignored_unknown += 1
             continue
         if k in d_to_sd:
             sd = d_to_sd[k]
             if sd in moved:
                 kept_moved += 1
-            elif sd in sd_to_sf:
-                ignored_absent += 1  # objet de scène que la base n'a pas sauvegardé
-            else:
+                continue
+            if sd not in sd_to_sf:
                 ignored_changed += 1
-            continue
+                continue
+            # Objet de scène inactif au début du jeu complet (ex. cabane, établi) : la base ne le
+            # sauvegarde pas encore. Le jeu le recrée depuis son prefab, comme un objet apparu en jeu.
+            if asset not in prefab_assets:
+                ignored_absent += 1
+                continue
+            absent_added += 1
         sig = (asset, tuple(round(c, 1) for c in pos))
         if kept_matcher.match_all({0: (asset, pos)}) or sig in seen_dynamic:
             dedup += 1
@@ -276,9 +283,9 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         f"{len(drop)} retirés (détruits dans la démo), {len(kept)} gardés tels quels")
     log(f"Monde : {len(moved)} objets déplacés entre les versions, dont {len(sf_destroyed_moved)} "
         f"détruits dans la démo ; {kept_moved} gardés à leur nouvelle place")
-    log(f"Monde : {len(add)} objets apparus pendant la démo ajoutés, {dedup} doublons évités ; ignorés : "
-        f"{ignored_changed} retirés du jeu complet, {ignored_absent} absents de la base, "
-        f"{ignored_unknown} inconnus du jeu complet")
+    log(f"Monde : {len(add)} objets ajoutés (apparus pendant la démo, ou inactifs au début du jeu complet : "
+        f"{absent_added}), {dedup} doublons évités ; ignorés : {ignored_changed} retirés du jeu complet, "
+        f"{ignored_absent} sans prefab, {ignored_unknown} inconnus ou exclus")
 
     # 3. Table de correspondance des numéros démo -> final.
     wo_service = T.service(base, "Service.WorldObject.ServiceData")

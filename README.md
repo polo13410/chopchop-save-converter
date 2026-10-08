@@ -114,13 +114,31 @@ L'état initial des deux cartes est extrait des scènes du jeu par `extract_scen
 
 - Le joueur garde sa force, son endurance et sa vitesse, dans les limites du jeu complet.
 
+**Missions enrichies par le jeu complet** (`extract_missions.py`, `mission_graph.py`, `mission_apply.py`) :
+le jeu complet a ajouté des actions à des missions qui existaient déjà dans la démo.
+Par exemple, `Mission_Board_InitialSetup` démarre 16 missions au lieu de 7 (améliorations de la ville,
+déblocage de nouveaux publics). Si la démo a exécuté la mission, ces ajouts ne se produiraient jamais.
+- L'avancement de la démo est déduit des effets visibles dans la sauvegarde : missions actives, recettes,
+  missions du tableau et articles débloqués, objets créés. Un effet ne compte que si une seule mission peut le produire.
+- Les actions ajoutées par le jeu complet sont appliquées : missions à démarrer (avec leurs actions de démarrage,
+  que le jeu n'exécute pas au chargement), recettes, objets de récompense à leur point d'apparition.
+- Le marqueur de fin de tutoriel du jeu complet est ajouté : certaines missions l'attendent (ex. la tortue).
+
+**Objets inactifs au début du jeu complet** (cabane, établi) : ils ne sont pas encore sauvegardés dans la base,
+le jeu les recrée depuis leur prefab.
+
+**Contenu déplacé** : le téléporteur de la zone 2 mène maintenant à la montagne depuis un autre emplacement.
+On suit le jeu complet : il est à reconstruire, et les portes de l'ancien emplacement ne sont pas transférées.
+
 Non transférés : objet en main, drones et camions en cours de livraison, succès.
 
-Pour régénérer l'état initial des cartes :
+Pour régénérer l'état initial des cartes et la définition des missions :
 
 ```
 .venv/Scripts/python extract_scene.py ".../ChopChopIncDemo_Data" catalog/scene-demo.csv
 .venv/Scripts/python extract_scene.py ".../ChopChopInc_Data" catalog/scene-complet.csv
+.venv/Scripts/python extract_missions.py ".../ChopChopIncDemo_Data" catalog/missions-demo.json
+.venv/Scripts/python extract_missions.py ".../ChopChopInc_Data" catalog/missions-complet.json
 ```
 
 **Cycle de vie des missions**, observé sur une partie du jeu complet :
@@ -143,7 +161,9 @@ et les missions en cours par worldObjectID.
 - [x] Convertisseur version 1 : progression sans le monde
 - [x] Tester la version 1 en jeu : la sauvegarde se charge et la progression est là
 - [x] Version 2 : objets du monde et position du joueur
-- [ ] Tester la version 2 en jeu
+- [x] Tester la version 2 en jeu : chargement infini corrigé (numéros des objets de scène, machines automatisées)
+- [x] Retours de test : tortue absente, cabane cassée, téléporteur de la zone 2 en double état
+- [ ] Retester la version 2
 
 ## Différences connues entre les versions
 
