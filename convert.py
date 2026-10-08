@@ -12,7 +12,9 @@ Ce qui est transféré :
 - objets du monde : arbres coupés, constructions, machines et leur contenu ;
 - position et orientation du joueur.
 
-Ce qui n'est pas transféré : statistiques du joueur, objet en main, drones et
+- statistiques du joueur : force, endurance, vitesse.
+
+Ce qui n'est pas transféré : objet en main, drones et
 camions en cours de livraison, succès.
 
 Usage :
@@ -133,6 +135,43 @@ def clone_from_demo(node):
         if e["t"] == "intref" and e["v"] >= 0:
             raise ValueError("sous-arbre de la démo avec une référence externe, copie impossible")
     return out
+
+
+# --- statistiques du joueur -------------------------------------------------
+
+# Enum PlayerStat du jeu : 0 None, 1 Strength, 2 Stamina, 3 MoveSpeedFactor, 4 inutilisé.
+STAT_NAMES = {1: "force", 2: "endurance", 3: "vitesse"}
+
+
+def transfer_player_stats(demo, base, log):
+    import struct
+
+    def stats(doc):
+        node = world.SaveView(doc).dicts["Player.PlayerStats+SaveData"]
+        return T.dict_pairs(node)[0][1]
+
+    def floats(node):
+        arr = node["c"][0]
+        return list(struct.unpack(f"<{arr['count']}f", bytes.fromhex(arr["hex"])))
+
+    def set_floats(node, values):
+        arr = node["c"][0]
+        arr["count"] = len(values)
+        arr["hex"] = struct.pack(f"<{len(values)}f", *values).hex()
+
+    d, b = stats(demo), stats(base)
+    limits = [tuple(c["v"] for c in vec["c"]) for vec in T.array_of(T.field(b, "permanentMinMaxValue"))["c"]]
+    d_perm = floats(T.field(d, "permanentValue"))
+    perm = floats(T.field(b, "permanentValue"))
+    for i, name in STAT_NAMES.items():
+        lo, hi = limits[i]
+        value = min(max(d_perm[i], lo), hi)
+        log(f"Joueur : {name} {perm[i]:.2f} -> {value:.2f} (limites du jeu complet {lo:g} à {hi:g})")
+        perm[i] = value
+    set_floats(T.field(b, "permanentValue"), perm)
+    # Valeur courante = permanente + temporaire ; on repart sans bonus temporaire.
+    set_floats(T.field(b, "currentValue"), perm)
+    set_floats(T.field(b, "temporaryValue"), [0.0] * len(perm))
 
 
 # --- missions --------------------------------------------------------------
@@ -270,6 +309,7 @@ def main():
     copy_audiences(demo, base, log)
     copy_inventories(demo, base, demo_refs, base_refs, catalog_full, log)
     check_mission_compat(demo, base_original, log, catalog_full)
+    transfer_player_stats(demo, base, log)
     mission_children = transfer_missions(demo, base, catalog_demo, log)
     if not args.sans_monde:
         world.transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,

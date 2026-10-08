@@ -108,7 +108,9 @@ L'état initial des deux cartes est extrait des scènes du jeu par `extract_scen
 - Les liens entre objets sont renumérotés : inventaires, machines, objets enfants des missions.
 - Le joueur reprend sa position et son regard de la démo.
 
-Non transférés : statistiques du joueur, objet en main, drones et camions en cours de livraison, succès.
+- Le joueur garde sa force, son endurance et sa vitesse, dans les limites du jeu complet.
+
+Non transférés : objet en main, drones et camions en cours de livraison, succès.
 
 Pour régénérer l'état initial des cartes :
 
