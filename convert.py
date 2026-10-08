@@ -1,6 +1,7 @@
 """Transfère la progression d'une sauvegarde de la démo dans une sauvegarde du jeu complet.
 
-Version 1 : progression seulement, le monde de la sauvegarde de base est gardé.
+Version 2 : progression et objets du monde (voir world.py pour les règles).
+L'option --sans-monde se limite à la progression, comme la version 1.
 
 Ce qui est transféré :
 - recettes débloquées et articles de la boutique (union démo + base) ;
@@ -8,9 +9,11 @@ Ce qui est transféré :
 - contenu des inventaires spéciaux : argent, sac du joueur, etc. ;
 - tableau des missions et missions actives, avec l'état de leurs conditions.
 
-Ce qui n'est pas transféré pour l'instant :
-- les objets du monde (arbres coupés, constructions, téléporteurs réparés) ;
-- la position et les statistiques du joueur.
+- objets du monde : arbres coupés, constructions, machines et leur contenu ;
+- position et orientation du joueur.
+
+Ce qui n'est pas transféré : statistiques du joueur, objet en main, drones et
+camions en cours de livraison, succès.
 
 Usage :
     python convert.py <demo.sav> <base_complet.sav> <sortie.sav> [--catalog-demo catalog/demo.csv]
@@ -23,6 +26,7 @@ import sys
 
 import odin_binary
 import odin_tree as T
+import world
 
 MISSION_COMPONENT = 17
 
@@ -167,6 +171,7 @@ def transfer_missions(demo, base, catalog_demo, log):
     wo_service = T.service(base, "Service.WorldObject.ServiceData")
     current = T.field(wo_service, "currentID")
     remap = {}
+    mission_children = {}
     reset = 0
     world_pairs = T.array_of(b_world)["c"]
     mission_pairs = T.array_of(b_missions)["c"]
@@ -180,6 +185,11 @@ def transfer_missions(demo, base, catalog_demo, log):
         obj_pair["c"][0]["v"] = new_id
         new_obj = obj_pair["c"][1]
         T.field(new_obj, "worldObjectID")["v"] = new_id
+        # Les objets enfants d'une mission (ex. ruche) sont renumérotés par world.py ;
+        # en attendant, on vide la liste pour ne pas pointer vers de mauvais objets.
+        children = T.field(new_obj, "childWorldObjects")
+        mission_children[new_id] = world.parray_values(children)
+        world.set_parray(children, [])
         comps = T.field(new_obj, "serializedComponents")["c"][0]
         comps["count"], comps["hex"] = 1, MISSION_COMPONENT.to_bytes(4, "little").hex()
         world_pairs.append(obj_pair)
@@ -208,7 +218,7 @@ def transfer_missions(demo, base, catalog_demo, log):
     set_ints(T.field(b_board, "runningMissions"), running, kind="uint")
     log(f"Tableau des missions : {len(int_set(T.field(d_board, 'unlockedMissionIDs')))} débloquées, "
         f"{len(running)} en cours")
-    return remap
+    return mission_children
 
 
 def check_ids(mission_value):
@@ -240,6 +250,9 @@ def main():
     p.add_argument("output")
     p.add_argument("--catalog-demo", default="catalog/demo.csv")
     p.add_argument("--catalog-full", default="catalog/complet.csv")
+    p.add_argument("--scene-demo", default="catalog/scene-demo.csv")
+    p.add_argument("--scene-full", default="catalog/scene-complet.csv")
+    p.add_argument("--sans-monde", action="store_true", help="ne transfère pas les objets du monde (version 1)")
     args = p.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -257,7 +270,11 @@ def main():
     copy_audiences(demo, base, log)
     copy_inventories(demo, base, demo_refs, base_refs, catalog_full, log)
     check_mission_compat(demo, base_original, log, catalog_full)
-    transfer_missions(demo, base, catalog_demo, log)
+    mission_children = transfer_missions(demo, base, catalog_demo, log)
+    if not args.sans_monde:
+        world.transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
+                             world.load_scene(args.scene_demo), world.load_scene(args.scene_full), log,
+                             mission_children)
 
     T.renumber(base, originals)
     data = odin_binary.encode(base)

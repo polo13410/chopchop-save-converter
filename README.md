@@ -85,17 +85,37 @@ arbres repoussés, constructions du joueur et quelques déclencheurs déplacés 
    supprimer ceux que le joueur a détruits, ajouter ceux qu'il a construits avec de nouveaux worldObjectID.
 4. Renuméroter toutes les données par objet et les missions en cours avec la table de correspondance.
 
-## Conversion (version 1 : progression seulement)
+## Conversion
 
 ```
-python convert.py demo.sav base_complet.sav sortie.sav
+python convert.py demo.sav base_complet.sav sortie.sav               # progression + carte
+python convert.py demo.sav base_complet.sav sortie.sav --sans-monde  # progression seulement
 ```
 
 `base_complet.sav` est une sauvegarde du jeu complet en tout début de partie.
-Le monde de cette base est gardé tel quel. Sont transférés depuis la démo :
-recettes, articles de boutique, audiences, argent et sac du joueur, tableau des missions
+
+**Progression** : recettes, articles de boutique, audiences, argent et sac du joueur, tableau des missions
 et missions actives avec l'état de leurs conditions.
 Une mission dont les conditions ont changé entre les versions repart de zéro.
+
+**Carte** (`world.py`) : les objets du monde n'ont pas d'identifiant stable, ils sont reconnus par type et position.
+L'état initial des deux cartes est extrait des scènes du jeu par `extract_scene.py`.
+- Les objets de la carte de la démo encore présents dans le jeu complet prennent leur état de la démo :
+  arbre coupé, machine posée, téléporteur réparé.
+- Le nouveau contenu du jeu complet est gardé.
+- Les objets déplacés par les développeurs (jusqu'à 3 m) restent à leur nouvelle place, sauf s'ils ont été détruits dans la démo.
+- Les objets apparus pendant la partie démo (constructions, bâtiments de la ville, objets lâchés) sont ajoutés.
+- Les liens entre objets sont renumérotés : inventaires, machines, objets enfants des missions.
+- Le joueur reprend sa position et son regard de la démo.
+
+Non transférés : statistiques du joueur, objet en main, drones et camions en cours de livraison, succès.
+
+Pour régénérer l'état initial des cartes :
+
+```
+.venv/Scripts/python extract_scene.py ".../ChopChopIncDemo_Data" catalog/scene-demo.csv
+.venv/Scripts/python extract_scene.py ".../ChopChopInc_Data" catalog/scene-complet.csv
+```
 
 **Cycle de vie des missions**, observé sur une partie du jeu complet :
 une mission active est un objet du monde, placé à l'origine, qui ne porte que le composant mission.
@@ -116,7 +136,8 @@ et les missions en cours par worldObjectID.
 - [x] Décoder `serializedComponents` des objets du monde
 - [x] Convertisseur version 1 : progression sans le monde
 - [x] Tester la version 1 en jeu : la sauvegarde se charge et la progression est là
-- [ ] Version 2 : objets du monde (arbres coupés, constructions, téléporteurs réparés), position du joueur
+- [x] Version 2 : objets du monde et position du joueur
+- [ ] Tester la version 2 en jeu
 
 ## Différences connues entre les versions
 
