@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b4b9a"/>
+      <stop offset="0.65" stop-color="#8f8fd6"/>
+      <stop offset="1" stop-color="#b9c7f0"/>
+    </linearGradient>
+    <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7cc46a"/>
+      <stop offset="1" stop-color="#5aa152"/>
+    </linearGradient>
+    <linearGradient id="hillFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9fd86a"/>
+      <stop offset="1" stop-color="#6fb24f"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef1ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#2a2160" flood-opacity="0.35"/>
+    </filter>
+    <clipPath id="frame"><rect width="1280" height="320" rx="28"/></clipPath>
+    <g id="tree">
+      <rect x="-5" y="-6" width="10" height="34" rx="4" fill="#8a5a3b"/>
+      <circle cx="0" cy="-26" r="26" fill="#5fae4a"/>
+      <circle cx="-16" cy="-12" r="18" fill="#6cc152"/>
+      <circle cx="16" cy="-14" r="18" fill="#7bd05c"/>
+      <circle cx="4" cy="-40" r="16" fill="#86d963"/>
+    </g>
+    <g id="stump">
+      <rect x="-12" y="-14" width="24" height="18" rx="4" fill="#8a5a3b"/>
+      <ellipse cx="0" cy="-14" rx="12" ry="5" fill="#d9a873"/>
+      <ellipse cx="0" cy="-14" rx="6" ry="2.5" fill="#b9845a"/>
+    </g>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="1280" height="320" fill="url(#sky)"/>
+
+    <!-- birds and clouds -->
+    <g fill="none" stroke="#3b2f74" stroke-width="3" stroke-linecap="round" opacity="0.55">
+      <path d="M520 58 q8 -8 16 0 q8 -8 16 0"/>
+      <path d="M570 84 q6 -6 12 0 q6 -6 12 0"/>
+      <path d="M1180 46 q7 -7 14 0 q7 -7 14 0"/>
+    </g>
+    <g fill="#ffffff" opacity="0.55">
+      <ellipse cx="660" cy="48" rx="70" ry="16"/>
+      <ellipse cx="700" cy="38" rx="40" ry="16"/>
+      <ellipse cx="1060" cy="70" rx="60" ry="13"/>
+    </g>
+
+    <!-- hills -->
+    <path d="M0 250 C 180 200, 360 230, 520 215 S 860 190, 1040 222 S 1220 210, 1280 214 L1280 320 L0 320 Z" fill="url(#hillBack)"/>
+    <path d="M0 282 C 220 252, 420 276, 640 262 S 1000 246, 1280 268 L1280 320 L0 320 Z" fill="url(#hillFront)"/>
+
+    <!-- forest on the left, a few trees chopped -->
+    <use href="#tree" x="70" y="250"/>
+    <use href="#stump" x="130" y="268"/>
+    <use href="#tree" x="190" y="262" transform="scale(1)"/>
+    <use href="#stump" x="250" y="274"/>
+    <use href="#tree" x="1252" y="256"/>
+
+    <!-- title -->
+    <text x="64" y="104" font-family="'Segoe UI', 'Trebuchet MS', Helvetica, Arial, sans-serif" font-weight="800" font-size="52" fill="#ffffff">Chop Chop Inc.</text>
+    <text x="64" y="156" font-family="'Segoe UI', 'Trebuchet MS', Helvetica, Arial, sans-serif" font-weight="700" font-size="36" fill="#ffe28a">demo save converter</text>
+    <text x="66" y="196" font-family="'Segoe UI', 'Trebuchet MS', Helvetica, Arial, sans-serif" font-weight="600" font-size="20" fill="#f1eeff" opacity="0.95">Keep your demo progress in the full game</text>
+
+    <!-- demo save card -->
+    <g transform="translate(600 92)" filter="url(#shadow)">
+      <g transform="rotate(-5 90 80)">
+        <rect width="180" height="160" rx="22" fill="url(#card)"/>
+        <rect x="0" y="0" width="180" height="44" rx="22" fill="#c9c3ef"/>
+        <rect x="0" y="22" width="180" height="22" fill="#c9c3ef"/>
+        <text x="90" y="31" text-anchor="middle" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="800" font-size="20" fill="#4a3f8c">DEMO</text>
+        <use href="#tree" x="60" y="130" transform="translate(-12 -6) scale(0.7) translate(25.7 55)"/>
+        <use href="#stump" x="118" y="132"/>
+        <rect x="24" y="140" width="132" height="8" rx="4" fill="#dcd8f5"/>
+      </g>
+    </g>
+
+    <!-- arrow -->
+    <g transform="translate(800 172)">
+      <path d="M0 0 h86" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+      <path d="M70 -26 L104 0 L70 26" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- full game save card -->
+    <g transform="translate(928 76)" filter="url(#shadow)">
+      <g transform="rotate(4 100 90)">
+        <rect width="200" height="180" rx="24" fill="url(#card)"/>
+        <rect x="0" y="0" width="200" height="48" rx="24" fill="#ffcf5a"/>
+        <rect x="0" y="24" width="200" height="24" fill="#ffcf5a"/>
+        <text x="100" y="33" text-anchor="middle" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="800" font-size="20" fill="#7a4a00">FULL GAME</text>
+        <use href="#tree" x="52" y="148" transform="scale(0.72) translate(20 57)"/>
+        <use href="#tree" x="118" y="146" transform="scale(0.72) translate(46 57)"/>
+        <use href="#stump" x="150" y="152"/>
+        <rect x="24" y="160" width="152" height="8" rx="4" fill="#ffe7a6"/>
+        <!-- sparkles -->
+        <g fill="#ffcf5a">
+          <path d="M176 70 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z"/>
+          <path d="M30 76 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3 z"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- axe -->
+    <g transform="translate(1196 166) rotate(28)">
+      <rect x="-7" y="-10" width="14" height="120" rx="7" fill="#a86b3c"/>
+      <rect x="-7" y="70" width="14" height="22" rx="3" fill="#7a8fb0"/>
+      <path d="M-6 -6 C -46 -22, -62 4, -52 34 C -40 22, -22 18, -6 22 Z" fill="#c7cbd6" stroke="#8b90a0" stroke-width="3"/>
+    </g>
+  </g>
+</svg>

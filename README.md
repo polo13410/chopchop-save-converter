@@ -1,4 +1,18 @@
+<p align="center">
+  <img src="docs/banner.svg" alt="Chop Chop Inc. demo save converter: keep your demo progress in the full game" width="100%">
+</p>
+
+<p align="center">
+  <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/polo13410/chopchop-save-converter?label=download&color=f5b82e" alt="Latest release"></a>
+  <a href="../../actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/polo13410/chopchop-save-converter/release.yml?branch=main&label=build" alt="Build status"></a>
+  <a href="../../releases"><img src="https://img.shields.io/github/downloads/polo13410/chopchop-save-converter/total?color=6cc152" alt="Downloads"></a>
+  <img src="https://img.shields.io/badge/platform-Windows-5b4b9a" alt="Windows">
+  <img src="https://img.shields.io/badge/python-3.10%2B-8f8fd6" alt="Python 3.10+">
+</p>
+
 # Chop Chop Inc. demo save converter
+
+<!-- Before / after: add docs/before.png and docs/after.png (same spot, fresh full game vs converted save) and show them here. -->
 
 Played the **Chop Chop Inc. demo** for hours and don't want to start over? This tool carries your demo progress over to the **full game**: money, backpack, recipes, missions, skills, and the world itself (trees you cut, things you built, machines and their contents).
 
