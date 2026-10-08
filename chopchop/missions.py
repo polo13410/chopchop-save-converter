@@ -401,6 +401,17 @@ class Additions:
             arr["c"] = [p for p in arr["c"] if p["c"][0]["v"] not in doomed]
         self.removed.extend([target] * len(doomed))
 
+    def remove_all(self, target):
+        """Remove every object of one kind, with all its data."""
+        asset = self.ids_full.get(target)
+        doomed = {pair["c"][0]["v"] for pair in self.world_arr["c"] if W.asset_pos(pair["c"][1])[0] == asset}
+        if not doomed:
+            return
+        for node in self.view.dicts.values():
+            arr = T.array_of(node)
+            arr["c"] = [p for p in arr["c"] if p["c"][0]["v"] not in doomed]
+        self.removed.extend([target] * len(doomed))
+
     def start(self, target):
         """Insert a started mission and run its start actions, which the game
         does not run for a mission loaded from a save."""

@@ -37,6 +37,12 @@ KEEP_BASE_MISSIONS = frozenset({"Mission_Area2_TP_CheckIfBuild"})
 SKIP_DEMO_MISSIONS = frozenset({"Mission_Area2_CheckForDoorbellDestroy", "Mission_Area2_StayCloseTP"})
 SKIP_DEMO_OBJECTS = frozenset({"Teleporter_Closed", "p_teleporter_Area2_DoorbellCollider"})
 
+# Objects the full game rebuilds through a quest, at a new spot. When the converter starts
+# that quest, the demo object is removed so it does not stay behind at the old spot.
+# The full-game cooking tutorial (walk to Chester, collect the pot, build the station)
+# builds the cooking station next to the campfire; in the demo it was built by the cabin.
+REBUILT_BY_QUEST = {"Mission_Tutorial_12A_WalkToChester": ("p_CookingStation_Crafter",)}
+
 
 class ConversionError(Exception):
     pass
@@ -102,6 +108,10 @@ def convert(demo_bytes, base_bytes=None, with_world=True, log=print, data=None):
     if with_world:
         missions.apply_trigger_additions(adds, demo, missions.load_definitions(_path("triggers-demo.json", data)),
                                          missions.load_definitions(_path("triggers-full.json", data)), log)
+    for quest, objects in REBUILT_BY_QUEST.items():
+        if quest in adds.started:
+            for name in objects:
+                adds.remove_all(name)
     adds.finish(log)
     missions.ensure_tutorial_marker(base, catalog_full, started, log)
 

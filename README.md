@@ -77,7 +77,7 @@ Run it from a terminal to use these:
 - **The Area 2 teleporter has to be rebuilt.** The full game moved it: it now leads to the mountains, from another spot. The converter follows the full game, so the old doors near the lake are not transferred.
 - **A few trees and bushes may come back.** The developers rearranged some vegetation. Where a tree moved, the full game's layout wins.
 - **New full-game content starts fresh**: new areas, new audiences to unlock, city upgrades, the turtle. The converter starts the missions the full game added on top of the demo, so they show up as if you had played the full game.
-- **One full-game tutorial step** ("walk to Chester") may appear. Just follow it.
+- **The cooking station has to be rebuilt.** The full game builds it through a tutorial quest (walk to Chester, collect the pot, build the station), next to the campfire. The converter starts that quest and removes the demo's station by the cabin, so you don't end up with two.
 - Tested with the full game Steam build `25187442` and the demo build `24361147`. A game update may need new data (see [Updating after a game patch](#updating-after-a-game-patch)).
 
 Curious what it does before running it? The [examples folder](examples) has a real demo save, its conversion, and a side-by-side comparison.
