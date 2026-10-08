@@ -98,7 +98,9 @@ python convert.py demo.sav base_complet.sav sortie.sav --sans-monde  # progressi
 et missions actives avec l'état de leurs conditions.
 Une mission dont les conditions ont changé entre les versions repart de zéro.
 
-**Carte** (`world.py`) : les objets du monde n'ont pas d'identifiant stable, ils sont reconnus par type et position.
+**Carte** (`world.py`) : les numéros d'objets diffèrent entre les versions, les objets sont donc reconnus par type et position.
+Dans une même version, les objets placés dans les scènes ont un numéro fixe : le jeu les retrouve par ce numéro
+au chargement. Le convertisseur garde donc le numéro du jeu complet et n'y copie que l'état de la démo.
 L'état initial des deux cartes est extrait des scènes du jeu par `extract_scene.py`.
 - Les objets de la carte de la démo encore présents dans le jeu complet prennent leur état de la démo :
   arbre coupé, machine posée, téléporteur réparé.
@@ -106,6 +108,8 @@ L'état initial des deux cartes est extrait des scènes du jeu par `extract_scen
 - Les objets déplacés par les développeurs (jusqu'à 3 m) restent à leur nouvelle place, sauf s'ils ont été détruits dans la démo.
 - Les objets apparus pendant la partie démo (constructions, bâtiments de la ville, objets lâchés) sont ajoutés.
 - Les liens entre objets sont renumérotés : inventaires, machines, objets enfants des missions.
+- Les machines automatisées du jeu complet (ex. atelier du castor) reçoivent une file de fabrication vide :
+  sans données, elles font planter le chargement.
 - Le joueur reprend sa position et son regard de la démo.
 
 - Le joueur garde sa force, son endurance et sa vitesse, dans les limites du jeu complet.

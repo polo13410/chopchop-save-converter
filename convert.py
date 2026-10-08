@@ -178,7 +178,7 @@ def world_dict(doc, suffix):
     return T.service(doc, f"[{suffix}, Assembly-CSharp]]")
 
 
-def transfer_missions(demo, base, catalog_demo, log):
+def transfer_missions(demo, base, catalog_demo, catalog_full, log):
     d_world = world_dict(demo, "WorldObjects.WorldObject+SaveData")
     b_world = world_dict(base, "WorldObjects.WorldObject+SaveData")
     d_missions = world_dict(demo, "Service.Mission.Mission+SaveData")
@@ -212,8 +212,12 @@ def transfer_missions(demo, base, catalog_demo, log):
     reset = 0
     world_pairs = T.array_of(b_world)["c"]
     mission_pairs = T.array_of(b_missions)["c"]
+    skipped_unknown = 0
     for key, value, pair in T.dict_pairs(d_missions):
         obj = d_obj[key]
+        if asset(obj) not in catalog_full:
+            skipped_unknown += 1  # ex. panneau de fin de démo
+            continue
         new_id = current["v"]
         current["v"] += 1
         remap[key] = new_id
@@ -244,7 +248,8 @@ def transfer_missions(demo, base, catalog_demo, log):
     T.array_of(b_world)["len"] = len(world_pairs)
     T.array_of(b_missions)["len"] = len(mission_pairs)
     log(f"Missions : {len(remap)} missions de la démo ajoutées, "
-        f"dont {reset} avec les conditions du jeu complet (remises à zéro)")
+        f"dont {reset} avec les conditions du jeu complet (remises à zéro), "
+        f"{skipped_unknown} propres à la démo ignorées")
 
     # 3. Tableau des missions.
     d_board = T.service(demo, "Service.MissionBoard.ServiceData")
@@ -308,11 +313,11 @@ def main():
     copy_inventories(demo, base, demo_refs, base_refs, catalog_full, log)
     check_mission_compat(demo, base_original, log, catalog_full)
     transfer_player_stats(demo, base, log)
-    mission_children = transfer_missions(demo, base, catalog_demo, log)
+    mission_children = transfer_missions(demo, base, catalog_demo, catalog_full, log)
     if not args.sans_monde:
         world.transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
                              world.load_scene(args.scene_demo), world.load_scene(args.scene_full), log,
-                             mission_children)
+                             mission_children, catalog_full)
 
     T.renumber(base, originals)
     data = odin_binary.encode(base)
