@@ -33,6 +33,7 @@ python savetool.py decode   save0.sav save0.json    # sauvegarde -> JSON éditab
 python savetool.py encode   save0.json save0.sav    # JSON -> sauvegarde
 python savetool.py summary  save0.sav --depth 3     # arborescence
 python savetool.py services demo.sav complet.sav    # compare les services de deux sauvegardes
+python savetool.py schema --a demo.sav --b c1.sav c2.sav  # compare les champs écrits par type
 ```
 
 ## Catalogue des identifiants
@@ -51,12 +52,47 @@ Résultat sur une sauvegarde de démo de trois heures : tous les IDs utilisés e
 avec le même sens. Seule exception : un panneau propre à la démo (`HiddenMission_HomeSweetHome_26_DEMOSIGN`).
 La carte est aussi la même : la plupart des objets du décor ont le même type à la même position.
 
+## Analyse de la structure (démo vs jeu complet)
+
+Comparaison faite avec `savetool.py schema` sur une sauvegarde démo de trois heures
+et trois sauvegardes du jeu complet, de 5 à 40 minutes de jeu.
+
+**Structure des données.** Les types communs aux deux versions ont exactement les mêmes champs.
+Seule différence réelle : `Inventory.Inventory` gagne un champ `totalAmount`, qui est la somme du contenu.
+Le jeu complet ajoute des systèmes absents de la démo : IA des créatures, succès, améliorations de session,
+interface, point de réapparition, nouveaux types de conditions de mission. Ils peuvent rester à leur état par défaut.
+
+**Deux sortes d'identifiants.**
+- Les *assetID* désignent un type de chose : recette, objet, mission, audience. Ils sont stables entre les versions.
+  Les services Recipe, Shop, MissionBoard (débloquées), TargetAudience et le contenu des inventaires
+  n'utilisent que ceux-là, et se copient donc tels quels.
+- Les *worldObjectID* numérotent les objets présents dans le monde. Le jeu les attribue au chargement,
+  donc ils **ne sont pas stables** : le même numéro désigne des objets différents dans les deux versions.
+  Les données par objet (santé, machines, inventaires posés, spawners) et les missions en cours y sont rattachées.
+
+**Les missions sont des objets du monde.** Chaque mission active existe comme objet, avec l'état de ses conditions.
+Une mission terminée disparaît du monde. `MissionBoard.runningMissions` contient des worldObjectID.
+
+**Correspondance des objets.** En comparant type et position arrondie, environ 77 % des objets de la démo
+se retrouvent dans le jeu complet. Le reste : objets ramassés ou lâchés, animaux qui bougent,
+arbres repoussés, constructions du joueur et quelques déclencheurs déplacés entre les versions.
+
+## Stratégie de conversion envisagée
+
+1. Partir d'une sauvegarde du jeu complet comme base.
+2. Copier les services à assetID : recettes, boutique, missions débloquées, audiences, contenu des inventaires.
+3. Pour les objets du monde : retrouver chaque objet de la démo dans la base par type et position,
+   supprimer ceux que le joueur a détruits, ajouter ceux qu'il a construits avec de nouveaux worldObjectID.
+4. Renuméroter toutes les données par objet et les missions en cours avec la table de correspondance.
+
 ## Avancement
 
 - [x] Décodeur / encodeur Odin binaire, testé sur les deux sauvegardes
 - [x] Vérifier que les identifiants d'objets et de recettes sont les mêmes entre démo et jeu complet
-- [ ] Cartographier chaque service (argent, inventaire, recettes, objets du monde, missions)
-- [ ] Comparer la structure interne des données par type (missions, machines, composants des objets)
+- [x] Comparer la structure interne des données par type
+- [x] Comprendre les deux sortes d'identifiants et le rattachement des missions
+- [ ] Comprendre le cycle de vie des missions (sauvegarde du jeu complet avec missions en cours et terminées)
+- [ ] Décoder `serializedComponents` des objets du monde
 - [ ] Greffer les sections compatibles de la démo dans une sauvegarde du jeu complet
 - [ ] Tester en jeu, une section à la fois
 

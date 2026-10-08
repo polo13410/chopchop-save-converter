@@ -6,6 +6,7 @@ Exemples :
     python savetool.py check save0.sav
     python savetool.py summary save0.sav
     python savetool.py services demo.sav complet.sav
+    python savetool.py schema --a demo.sav --b complet1.sav complet2.sav
 """
 
 import argparse
@@ -99,6 +100,38 @@ def services(path):
     return out
 
 
+def schema(paths):
+    """Pour chaque type C#, l'ensemble des champs (nom, sorte) écrits dans les sauvegardes."""
+    out = {}
+    for path in paths:
+        for _, e in walk(load_tree(path)["root"]):
+            if e["t"] in ("ref", "struct") and e.get("type"):
+                fields = out.setdefault(short(e["type"]), set())
+                for c in e["c"]:
+                    if "n" in c:
+                        kind = c["t"] if c["t"] not in ("ref", "struct") else short(c.get("type") or "null")
+                        fields.add((c["n"], kind))
+    return out
+
+
+def cmd_schema(args):
+    a = schema(args.a)
+    b = schema(args.b)
+    for t in sorted(set(a) | set(b)):
+        if t not in b:
+            print(f"- {t} : seulement dans A")
+        elif t not in a:
+            print(f"+ {t} : seulement dans B")
+        elif a[t] != b[t]:
+            print(f"~ {t}")
+            for n, k in sorted(a[t] - b[t]):
+                print(f"    - {n} ({k})")
+            for n, k in sorted(b[t] - a[t]):
+                print(f"    + {n} ({k})")
+        elif args.all:
+            print(f"= {t}")
+
+
 def cmd_services(args):
     a = services(args.a)
     b = services(args.b) if args.b else {}
@@ -126,10 +159,14 @@ def main():
     s.add_argument("--depth", type=int, default=3)
     v = sub.add_parser("services", help="liste les services d'une ou deux sauvegardes")
     v.add_argument("a"); v.add_argument("b", nargs="?")
+    m = sub.add_parser("schema", help="compare les champs écrits par type entre deux groupes de sauvegardes")
+    m.add_argument("--a", nargs="+", required=True, help="sauvegardes du groupe A (ex. démo)")
+    m.add_argument("--b", nargs="+", required=True, help="sauvegardes du groupe B (ex. jeu complet)")
+    m.add_argument("--all", action="store_true", help="affiche aussi les types identiques")
     args = p.parse_args()
     handler = {"decode": cmd_decode, "encode": cmd_encode,
                "check": cmd_check, "summary": cmd_summary,
-               "services": cmd_services}[args.cmd]
+               "services": cmd_services, "schema": cmd_schema}[args.cmd]
     sys.exit(handler(args) or 0)
 
 
