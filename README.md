@@ -115,7 +115,7 @@ et les missions en cours par worldObjectID.
 - [x] Comprendre le cycle de vie des missions
 - [x] Décoder `serializedComponents` des objets du monde
 - [x] Convertisseur version 1 : progression sans le monde
-- [ ] Tester la version 1 en jeu
+- [x] Tester la version 1 en jeu : la sauvegarde se charge et la progression est là
 - [ ] Version 2 : objets du monde (arbres coupés, constructions, téléporteurs réparés), position du joueur
 
 ## Différences connues entre les versions
