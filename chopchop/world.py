@@ -1,29 +1,30 @@
-"""Transfert des objets du monde de la démo vers une sauvegarde du jeu complet.
+"""Transfer of world objects from the demo save into a full-game save.
 
-Les numéros d'objets (worldObjectID) diffèrent entre les versions. Dans une
-même version, les objets placés dans les scènes ont un numéro fixe : le jeu les
-retrouve par ce numéro au chargement, il ne faut donc jamais les renuméroter.
-On reconnaît les objets d'une version à l'autre par leur type et leur position,
-en s'appuyant sur l'état initial des cartes extrait des scènes
-(extract_scene.py) pour les deux versions.
+World object numbers (worldObjectID) differ between the two versions. Within
+one version, objects placed in the scenes get a fixed number: the game finds
+them again by that number when loading, so they must never be renumbered.
+Objects are matched from one version to the other by type (assetID) and
+position, using the initial state of both maps, extracted from the game scenes
+(tools/extract_scene.py).
 
-Règles, pour chaque objet (hors missions et joueur, traités à part) :
+Rules, for every object (missions and the player are handled separately):
 
-Objets de la base (jeu complet) :
-- présent sur la carte du jeu complet ET sur celle de la démo : garde son
-  numéro et prend l'état de la démo, ou est retiré s'il a été détruit dans la
-  démo (arbre coupé...) ;
-- présent seulement sur la carte du jeu complet : gardé (nouveau contenu) ;
-- apparu en jeu (sur aucune carte) : retiré si la démo connaît son type,
-  gardé sinon.
+Objects of the base save (full game):
+- on the full-game map AND on the demo map: keeps its number and takes the
+  demo state, or is removed if it was destroyed in the demo (a cut tree...);
+- only on the full-game map: kept (new content);
+- spawned during play (on neither map): removed if the demo knows its type,
+  kept otherwise.
 
-Objets de la démo :
-- présent sur la carte de la démo et sur celle du jeu complet : fusionné dans
-  l'objet correspondant de la base (voir ci-dessus) ;
-- présent sur la carte de la démo mais plus sur celle du jeu complet : ignoré,
-  le jeu complet a changé cet endroit ;
-- apparu en jeu (construction, objet lâché, animal) : ajouté, sauf doublon
-  avec un objet gardé de la base au même endroit.
+Objects of the demo save:
+- on the demo map and on the full-game map: merged into the matching base
+  object (see above);
+- on the demo map but no longer on the full-game map: ignored, the full game
+  changed that spot;
+- on both maps but inactive at the start of the full game (cabin, workbench):
+  recreated from its prefab, like an object spawned during play;
+- spawned during play (buildings, dropped items, animals): added, unless it
+  duplicates a kept base object at the same spot.
 """
 
 import csv
@@ -31,10 +32,10 @@ import math
 import struct
 from collections import defaultdict
 
-import odin_tree as T
+from . import odin_tree as T
 
-TOLERANCE = 0.5  # mètres
-MOVED_TOLERANCE = 3.0  # objets déplacés par les développeurs entre les versions
+TOLERANCE = 0.5  # meters
+MOVED_TOLERANCE = 3.0  # objects moved by the developers between versions
 
 SKIP_TYPES = ("Drone.DeliveryDrone+SaveData", "Truck.Truck+SaveData")
 PLAYER_TYPES = ("Player.Player+SaveData", "Player.PlayerStats+SaveData",
@@ -49,7 +50,7 @@ def load_scene(path):
 
 
 class Matcher:
-    """Apparie des objets (assetID, position) à une liste de référence, sans réutilisation."""
+    """Matches (assetID, position) items to a reference list, each reference used once."""
 
     def __init__(self, reference, tolerance=TOLERANCE):
         self.tolerance = tolerance
@@ -58,9 +59,9 @@ class Matcher:
             self.by_asset[asset].append((i, pos))
 
     def match_all(self, items):
-        """items : {clé: (assetID, position)} -> {clé: index de référence}.
+        """items: {key: (assetID, position)} -> {key: reference index}.
 
-        Les paires les plus proches sont attribuées en premier.
+        The closest pairs are assigned first.
         """
         candidates = []
         for key, (asset, pos) in items.items():
@@ -90,12 +91,12 @@ def set_parray(node, values, fmt="I"):
 
 
 class SaveView:
-    """Accès pratique aux dictionnaires d'objets d'une sauvegarde."""
+    """Convenient access to the per-object dictionaries of a save."""
 
     def __init__(self, doc):
         self.doc = doc
-        self.dicts = {}  # nom court du type -> nœud Dictionary
-        self.pairs = {}  # nom court du type -> paire de la table des services
+        self.dicts = {}  # short type name -> Dictionary node
+        self.pairs = {}  # short type name -> pair in the service table
         table = T.array_of(T.field(doc["root"][0], "data"))
         for pair in table["c"]:
             type_name = pair["c"][0]["c"][0]["v"]
@@ -126,7 +127,7 @@ def asset_pos(obj):
 
 
 def inventory_id_to_type(doc, refs):
-    """{inventoryID: InventoryType} pour les inventaires spéciaux."""
+    """{inventoryID: InventoryType} for the special inventories."""
     inv_service = T.service(doc, "Service.Inventory.ServiceData")
     out = {}
     for inv_type, value, _ in T.dict_pairs(T.field(inv_service, "specialInventories")):
@@ -136,7 +137,7 @@ def inventory_id_to_type(doc, refs):
 
 
 def clone_demo(node, demo_refs):
-    """Copie un sous-arbre de la démo en remplaçant ses références externes par des copies."""
+    """Copy a demo subtree, replacing references to the outside with full copies."""
     out = T.clone(node)
     for parent in T.walk([out]):
         for i, c in enumerate(parent.get("c", [])):
@@ -150,9 +151,9 @@ def clone_demo(node, demo_refs):
     return out
 
 
-# Prefabs du jeu complet qui portent le composant AutomatedCrafter (absent de la démo).
-# Sans données sauvegardées, ce composant plante au chargement (son lien vers le
-# Crafter n'est pas encore initialisé) : on leur donne une file de fabrication vide.
+# Full-game prefabs carrying the AutomatedCrafter component (not in the demo).
+# Without saved data this component crashes the game while loading (its link to
+# the Crafter is set in Awake, which has not run yet), so they get an empty queue.
 AUTOMATED_CRAFTER_PREFABS = ("p_AutoFurnace", "p_BoberCarvingCrafter01", "p_FurnitureCrafter03",
                              "p_automaticElectroPress", "p_automaticSawhorse01")
 AUTOMATED_TYPE = "WorldObjects.AutomatedCrafter+SaveData, Assembly-CSharp"
@@ -162,9 +163,9 @@ AUTOMATED_LIST = ("System.Collections.Generic.List`1[[WorldObjects.AutomatedCraf
                   "Assembly-CSharp]], mscorlib")
 
 
-def ensure_automated_crafters(base, catalog_names, log):
+def ensure_automated_crafters(base, catalog_full, log):
     B = SaveView(base)
-    ids = {a for a, n in catalog_names.items() if n in AUTOMATED_CRAFTER_PREFABS}
+    ids = {a for a, n in catalog_full.items() if n in AUTOMATED_CRAFTER_PREFABS}
     objs = [k for k, o in B.objects().items() if T.field(o, "assetID")["v"] in ids]
     node = B.dicts.get("AutomatedCrafter+SaveData")
     have = set() if node is None else {k for k, _, _ in T.dict_pairs(node)}
@@ -172,7 +173,7 @@ def ensure_automated_crafters(base, catalog_names, log):
     if not missing:
         return
     if node is None:
-        # Nouveau dictionnaire, construit sur le modèle d'un dictionnaire existant de la base.
+        # New dictionary, built from an existing dictionary of the base save.
         template = B.pairs["Spawner+SaveData"]
         pair = T.clone(template)
         pair["c"][0]["c"][0]["v"] = AUTOMATED_DICT
@@ -192,11 +193,11 @@ def ensure_automated_crafters(base, catalog_names, log):
             ], name="$v"),
         ]})
     arr["len"] = len(arr["c"])
-    log(f"Monde : file de fabrication vide créée pour {len(missing)} machine(s) automatisée(s)")
+    log(f"World: empty crafting queue created for {len(missing)} automated machine(s)")
 
 
 def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
-                   scene_demo, scene_full, log, mission_children=None, catalog_names=None,
+                   scene_demo, scene_full, log, mission_children=None,
                    prefab_assets=frozenset(), skip_names=frozenset()):
     D, B = SaveView(demo), SaveView(base)
     d_objs, b_objs = D.objects(), B.objects()
@@ -206,26 +207,26 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         d_skip |= D.keys_of(short)
     b_protect = B.mission_ids() | {b_player}
 
-    # Appariements avec les cartes initiales.
+    # Matching against the initial maps.
     sd_to_sf = Matcher(scene_full).match_all({i: s for i, s in enumerate(scene_demo)})
-    # Second passage, plus large, pour les objets déplacés entre les versions.
+    # Second, looser pass for objects the developers moved between versions.
     taken = set(sd_to_sf.values())
     rest_sf = [(i, s) for i, s in enumerate(scene_full) if i not in taken]
     moved_raw = Matcher([s for _, s in rest_sf], MOVED_TOLERANCE).match_all(
         {i: s for i, s in enumerate(scene_demo) if i not in sd_to_sf})
-    moved = {sd: rest_sf[j][0] for sd, j in moved_raw.items()}  # index démo -> index complet
+    moved = {sd: rest_sf[j][0] for sd, j in moved_raw.items()}  # demo index -> full index
     sf_to_sd = {sf: sd for sd, sf in sd_to_sf.items()}
     b_to_sf = Matcher(scene_full).match_all({k: asset_pos(o) for k, o in b_objs.items() if k not in b_protect})
     d_to_sd = Matcher(scene_demo).match_all({k: asset_pos(o) for k, o in d_objs.items() if k not in d_skip})
     sd_to_d = {sd: k for k, sd in d_to_sd.items()}
 
-    # Objets déplacés : on garde la version du jeu complet, sauf si le joueur l'a détruite dans la démo.
+    # Moved objects: keep the full-game version, unless the player destroyed it in the demo.
     sf_destroyed_moved = {sf for sd, sf in moved.items() if sd not in sd_to_d}
 
-    # 1. Objets de la base : mis à jour sur place, retirés, ou gardés.
-    # Les objets des scènes ont un worldObjectID fixe dans chaque version : le jeu les
-    # retrouve par ce numéro. On garde donc le numéro de la base et on y met l'état de la démo.
-    inplace = {}  # id base -> id démo
+    # 1. Base objects: updated in place, removed, or kept.
+    # Scene objects have a fixed worldObjectID in each version and the game finds
+    # them by that number, so the base number is kept and the demo state copied in.
+    inplace = {}  # base id -> demo id
     drop = set()
     for k, o in b_objs.items():
         if k in b_protect:
@@ -235,17 +236,17 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             if sf in sf_to_sd:
                 dk = sd_to_d.get(sf_to_sd[sf])
                 if dk is None:
-                    drop.add(k)  # détruit dans la démo
+                    drop.add(k)  # destroyed in the demo
                 else:
                     inplace[k] = dk
             elif sf in sf_destroyed_moved:
                 drop.add(k)
         elif T.field(o, "assetID")["v"] in catalog_demo:
-            drop.add(k)  # apparu en jeu dans la base : la démo fait foi
+            drop.add(k)  # spawned during play in the base save: the demo wins
     kept = {k: asset_pos(o) for k, o in b_objs.items()
             if k not in drop and k not in b_protect and k not in inplace}
 
-    # 2. Objets apparus en jeu dans la démo : ajoutés avec un nouveau numéro.
+    # 2. Demo objects that need a new number.
     add, ignored_changed, ignored_unknown, ignored_absent, dedup, kept_moved = [], 0, 0, 0, 0, 0
     absent_added = 0
     kept_matcher = Matcher(list(kept.values()))
@@ -266,8 +267,8 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             if sd not in sd_to_sf:
                 ignored_changed += 1
                 continue
-            # Objet de scène inactif au début du jeu complet (ex. cabane, établi) : la base ne le
-            # sauvegarde pas encore. Le jeu le recrée depuis son prefab, comme un objet apparu en jeu.
+            # Scene object inactive at the start of the full game (cabin, workbench): the
+            # base save does not contain it yet. The game recreates it from its prefab.
             if asset not in prefab_assets:
                 ignored_absent += 1
                 continue
@@ -279,15 +280,15 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         seen_dynamic.add(sig)
         add.append(k)
 
-    log(f"Monde : {len(b_objs)} objets dans la base : {len(inplace)} mis à l'état de la démo, "
-        f"{len(drop)} retirés (détruits dans la démo), {len(kept)} gardés tels quels")
-    log(f"Monde : {len(moved)} objets déplacés entre les versions, dont {len(sf_destroyed_moved)} "
-        f"détruits dans la démo ; {kept_moved} gardés à leur nouvelle place")
-    log(f"Monde : {len(add)} objets ajoutés (apparus pendant la démo, ou inactifs au début du jeu complet : "
-        f"{absent_added}), {dedup} doublons évités ; ignorés : {ignored_changed} retirés du jeu complet, "
-        f"{ignored_absent} sans prefab, {ignored_unknown} inconnus ou exclus")
+    log(f"World: {len(b_objs)} objects in the base save: {len(inplace)} set to their demo state, "
+        f"{len(drop)} removed (destroyed in the demo), {len(kept)} kept as they are")
+    log(f"World: {len(moved)} objects moved between versions, {len(sf_destroyed_moved)} of them "
+        f"destroyed in the demo; {kept_moved} kept at their new spot")
+    log(f"World: {len(add)} objects added (spawned during the demo, or inactive at the start of the "
+        f"full game: {absent_added}), {dedup} duplicates avoided; ignored: {ignored_changed} removed "
+        f"from the full game, {ignored_absent} without prefab, {ignored_unknown} unknown or excluded")
 
-    # 3. Table de correspondance des numéros démo -> final.
+    # 3. Demo number -> final number.
     wo_service = T.service(base, "Service.WorldObject.ServiceData")
     current = T.field(wo_service, "currentID")
     idmap = {d_player: b_player}
@@ -297,7 +298,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         idmap[k] = current["v"]
         current["v"] += 1
 
-    # 4. Inventaires.
+    # 4. Inventories.
     b_special = inventory_id_to_type(base, base_refs)
     d_special = inventory_id_to_type(demo, demo_refs)
     b_special_by_type = {t: i for i, t in b_special.items()}
@@ -327,14 +328,14 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             inv["c"].insert(pos, {"t": "int", "n": "totalAmount", "v": total})
 
     def map_inventory(old, base_obj):
-        """Inventaire final pour l'inventaire démo `old` de l'objet final `base_obj`."""
+        """Final inventory for demo inventory `old` of final object `base_obj`."""
         nonlocal inv_count
         if old in d_special and d_special[old] in b_special_by_type:
             return b_special_by_type[d_special[old]]
         inv_count += 1
         target = b_obj_inv.get(base_obj)
         if target is not None and target not in b_special and target in b_inventories:
-            # Même numéro d'inventaire que la base, contenu de la démo.
+            # Same inventory number as the base save, demo content.
             set_content(b_inventories[target], old)
             return target
         new = next_inv["v"]
@@ -349,13 +350,13 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         arr["len"] = len(arr["c"])
         return new
 
-    # 5. Retirer les objets détruits, leurs données et leurs inventaires non spéciaux.
+    # 5. Remove destroyed objects, their data and their non-special inventories.
     dropped_inventories = {b_obj_inv[k] for k in drop if k in b_obj_inv and b_obj_inv[k] not in b_special}
     for node in B.dicts.values():
         T.set_array(T.array_of(node), [p for k, _, p in T.dict_pairs(node) if k not in drop])
     T.set_array(T.array_of(inv_dict), [p for k, _, p in T.dict_pairs(inv_dict) if k not in dropped_inventories])
 
-    # 6. Copier les données de la démo : objets mis à jour sur place et objets ajoutés.
+    # 6. Copy the demo data: objects updated in place and added objects.
     lost_refs = 0
     targets = {dk: bk for bk, dk in inplace.items()}
     targets.update({k: idmap[k] for k in add})
@@ -368,7 +369,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             continue
         b_node = B.dicts.get(short)
         if b_node is None:
-            # Type absent de la base : on reprend le dictionnaire de la démo, vidé.
+            # Type missing from the base save: reuse the demo dictionary, emptied.
             table = T.array_of(T.field(base["root"][0], "data"))
             new_pair = clone_demo(D.pairs[short], demo_refs)
             T.set_array(T.array_of(new_pair["c"][1]), [])
@@ -381,7 +382,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
         for k, p in pairs:
             final = targets[k]
             if short == "WorldObject+SaveData" and k in inplace_demo:
-                # Objet de scène : on garde l'entrée de la base, avec la position et les composants de la démo.
+                # Scene object: keep the base entry, with the demo position and components.
                 b_value = b_world_index[final]
                 d_value = p["c"][1]
                 for name in ("position", "rotation"):
@@ -418,7 +419,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
                 arr["c"].append(new)
         arr["len"] = len(arr["c"])
 
-    # 7. Liens des objets de la base vers des objets retirés.
+    # 7. Links from base objects to removed objects.
     for short in ("Useables.Crafter+SaveData", "Useables.AutoInventoryCrafter+SaveData"):
         node = B.dicts.get(short)
         if node is None:
@@ -436,7 +437,7 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             lost_refs += len(old) - len(new)
             set_parray(children, new)
 
-    # Objets enfants des missions de la démo.
+    # Child objects of the demo missions.
     if mission_children:
         objs_now = {k: v for k, v, _ in T.dict_pairs(B.world)}
         for mission_id, old in mission_children.items():
@@ -445,10 +446,10 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
             set_parray(T.field(objs_now[mission_id], "childWorldObjects"), mapped)
 
     if lost_refs:
-        log(f"Monde : {lost_refs} liens vers des objets non transférés retirés ou redirigés")
-    log(f"Monde : {inv_count} inventaires d'objets transférés")
+        log(f"World: {lost_refs} links to objects that were not transferred removed or redirected")
+    log(f"World: {inv_count} object inventories transferred")
 
-    # 8. Joueur : position et regard de la démo, le reste vient du jeu complet.
+    # 8. Player: demo position and view direction, everything else from the full game.
     b_obj = b_objs[b_player]
     d_obj = d_objs[d_player]
     for name in ("position", "rotation"):
@@ -458,6 +459,6 @@ def transfer_world(demo, base, demo_refs, base_refs, catalog_demo, catalog_full,
     b_cam = {k: v for k, v, _ in T.dict_pairs(B.dicts["Player.FPSCamera+SaveData"])}[b_player]
     for name in ("upDownAngle", "leftRightAngle"):
         T.field(b_cam, name)["v"] = T.field(d_cam, name)["v"]
-    log("Joueur : position et orientation de la démo")
-    ensure_automated_crafters(base, catalog_names, log)
+    log("Player: demo position and view direction")
+    ensure_automated_crafters(base, catalog_full, log)
     return idmap

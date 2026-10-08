@@ -1,11 +1,11 @@
-"""Extrait les objets du monde placés dans les scènes du jeu (état initial de la carte).
+"""Extract the world objects placed in the game scenes (initial state of the map).
 
-Pour chaque composant WorldObject trouvé dans les fichiers level*, écrit son
-assetID et sa position dans le monde (hiérarchie des Transform appliquée).
-Comparer une sauvegarde à cet état initial dit ce que le joueur a changé.
+For each WorldObject component found in the level* files, write its assetID
+and its position in the world (with the Transform hierarchy applied).
+Comparing a save to this initial state tells what the player changed.
 
-Usage :
-    .venv/Scripts/python extract_scene.py <dossier *_Data du jeu> <sortie.csv>
+Usage (requires UnityPy):
+    python -m tools.extract_scene <game *_Data folder> <output.csv>
 """
 
 import csv
@@ -18,7 +18,7 @@ import UnityPy
 
 
 def qmul_vec(q, v):
-    """Applique la rotation q (x, y, z, w) au vecteur v."""
+    """Apply rotation q (x, y, z, w) to vector v."""
     x, y, z, w = q
     vx, vy, vz = v
     # t = 2 * cross(q.xyz, v)
@@ -76,11 +76,11 @@ def extract(data_dir):
                 continue
             raw = obj.get_raw_data()
             asset_id = struct.unpack_from("<i", raw, len(raw) - 4)[0]
-            flag = struct.unpack_from("<i", raw, len(raw) - 8)[0]
+            flag = struct.unpack_from("<i", raw, len(raw) - 8)[0]  # 1 = saved (serializeWorldObject)
             go = mb.m_GameObject.read()
             tr = go.m_Transform.read()
             (x, y, z), _, _ = world_transform(tr, cache)
-            # Un WorldObject sous un autre WorldObject est un enfant (childWorldObjects).
+            # A WorldObject under another WorldObject is a child (childWorldObjects).
             parent_wo = 0
             father = tr.m_Father
             while father and father.path_id:
@@ -102,13 +102,17 @@ def extract(data_dir):
     return rows
 
 
+def write(rows, out):
+    with open(out, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["scene", "assetID", "x", "y", "z", "flag", "under_worldobject", "name"])
+        w.writerows(rows)
+
+
 def main():
     rows = extract(sys.argv[1])
-    with open(sys.argv[2], "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["scene", "assetID", "x", "y", "z", "flag", "sous_worldobject", "nom"])
-        w.writerows(rows)
-    print(f"{len(rows)} objets -> {sys.argv[2]}")
+    write(rows, sys.argv[2])
+    print(f"{len(rows)} objects -> {sys.argv[2]}")
 
 
 if __name__ == "__main__":

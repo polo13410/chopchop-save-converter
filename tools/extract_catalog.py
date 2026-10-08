@@ -1,19 +1,17 @@
-"""Extrait le catalogue des identifiants (assetID) depuis les fichiers du jeu.
+"""Extract the catalog of identifiers (assetIDs) from the game files.
 
-Les sauvegardes ne référencent les objets, recettes, missions, etc. que par
-un entier (assetID). Ce script retrouve le nom et la catégorie de chaque ID
-en lisant les fichiers Unity du jeu, pour pouvoir comparer démo et jeu complet.
+Saves only refer to items, recipes, missions, etc. by an integer (assetID).
+This script finds the name and category of each id by reading the Unity files
+of the game, so the demo and the full game can be compared.
 
-Usage :
-    .venv/Scripts/python extract_catalog.py <dossier *_Data du jeu> <sortie.csv>
+Usage (requires UnityPy):
+    python -m tools.extract_catalog <game *_Data folder> <output.csv>
 
-Nécessite UnityPy (pip install UnityPy).
-
-Deux sortes d'objets portent un assetID :
-- les ScriptableObject (Recipe, Mission, TargetAudience...) : l'assetID est
-  le premier champ après m_Name ;
-- les composants WorldObject des prefabs : l'assetID est le dernier champ,
-  le nom vient du GameObject parent.
+Two kinds of objects carry an assetID:
+- ScriptableObjects (Recipe, Mission, TargetAudience...): the assetID is the
+  first field after m_Name;
+- WorldObject components of prefabs: the assetID is the last field, and the
+  name comes from the parent GameObject.
 """
 
 import csv
@@ -48,7 +46,7 @@ def script_name(mb):
 def extract(data_dir):
     files = sorted(glob.glob(os.path.join(data_dir, "*.assets")))
     files += sorted(f for f in glob.glob(os.path.join(data_dir, "level*")) if "." not in os.path.basename(f))
-    catalog = {}  # id -> (catégorie, nom, source)
+    catalog = {}  # id -> (category, name, source file)
     for path in files:
         env = UnityPy.load(path)
         for obj in env.objects:
@@ -76,21 +74,25 @@ def extract(data_dir):
                 entry = (cls, mb.m_Name, os.path.basename(path))
             else:
                 continue
-            # Les prefabs (resources.assets) priment sur les instances de scène.
+            # Prefabs (resources.assets) win over scene instances.
             if aid not in catalog or catalog[aid][2].startswith("level"):
                 catalog[aid] = entry
     return catalog
 
 
+def write(catalog, out):
+    with open(out, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["assetID", "category", "name", "file"])
+        for aid, (cat, name, src) in sorted(catalog.items(), key=lambda x: (x[1][0], x[1][1])):
+            w.writerow([aid, cat, name, src])
+
+
 def main():
     data_dir, out = sys.argv[1], sys.argv[2]
     catalog = extract(data_dir)
-    with open(out, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["assetID", "categorie", "nom", "fichier"])
-        for aid, (cat, name, src) in sorted(catalog.items(), key=lambda x: (x[1][0], x[1][1])):
-            w.writerow([aid, cat, name, src])
-    print(f"{len(catalog)} identifiants -> {out}")
+    write(catalog, out)
+    print(f"{len(catalog)} identifiers -> {out}")
 
 
 if __name__ == "__main__":

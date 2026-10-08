@@ -1,24 +1,24 @@
-"""Lecteur / écrivain du format binaire d'Odin Serializer.
+"""Reader / writer for the Odin Serializer binary format.
 
-Référence : https://github.com/TeamSirenix/odin-serializer
+Reference: https://github.com/TeamSirenix/odin-serializer
 (BinaryDataReader.cs, BinaryDataWriter.cs, BinaryEntryType.cs)
 
-Le fichier est converti en un arbre d'entrées JSON sans perte :
-encoder(decoder(fichier)) redonne exactement les mêmes octets.
+A save file is turned into a lossless tree of JSON-friendly entries:
+encode(decode(file)) gives back the exact same bytes.
 
-Forme d'une entrée :
-    {"t": <type>, "n": <nom ou absent>, ...}
-    - nœuds :   "t": "ref" | "struct", "type": nom de type C# ou null,
-                "id": identifiant (ref seulement), "c": [entrées enfants]
-    - tableaux: "t": "array", "len": longueur annoncée, "c": [entrées]
-    - tableau primitif : "t": "parray", "count", "size", "hex"
-    - valeurs : "t": "int", "float", "string", ... avec "v"
+Shape of an entry:
+    {"t": <kind>, "n": <name, absent when unnamed>, ...}
+    - nodes:            "t": "ref" | "struct", "type": C# type name or None,
+                        "id": reference id (ref only), "c": [child entries]
+    - arrays:           "t": "array", "len": declared length, "c": [entries]
+    - primitive arrays: "t": "parray", "count", "size", "hex"
+    - values:           "t": "int", "float", "string", ... with "v"
 """
 
 import struct
 
-# Codes des entrées (BinaryEntryType.cs). Les valeurs vont par paires :
-# code nommé, puis code non nommé = code nommé + 1.
+# Entry codes (BinaryEntryType.cs). They come in pairs:
+# a named code, then the unnamed code = named code + 1.
 NAMED_REF, UNNAMED_REF = 0x01, 0x02
 NAMED_STRUCT, UNNAMED_STRUCT = 0x03, 0x04
 END_OF_NODE = 0x05
@@ -28,8 +28,9 @@ PRIMITIVE_ARRAY = 0x08
 TYPE_NAME = 0x2F
 TYPE_ID = 0x30
 END_OF_STREAM = 0x31
+UNNAMED_NULL = 0x2E
 
-# Valeurs simples : code nommé -> (nom, format struct ou traitement spécial)
+# Simple values: named code -> (kind, struct format or special handling)
 SCALARS = {
     0x09: ("intref", "<i"),
     0x0B: ("extindex", "<i"),
@@ -63,11 +64,12 @@ class Reader:
     def __init__(self, data: bytes):
         self.b = data
         self.p = 0
-        self.types = {}  # id -> nom de type, comme le cache d'Odin
+        self.types = {}  # id -> type name, like Odin's type cache
+        self.saw_eos = False
 
     def take(self, n):
         if self.p + n > len(self.b):
-            raise OdinFormatError(f"fin de fichier inattendue à 0x{self.p:X}")
+            raise OdinFormatError(f"unexpected end of file at 0x{self.p:X}")
         chunk = self.b[self.p:self.p + n]
         self.p += n
         return chunk
@@ -83,7 +85,7 @@ class Reader:
             return self.take(length).decode("latin-1")
         if wide == 1:
             return self.take(length * 2).decode("utf-16-le")
-        raise OdinFormatError(f"drapeau de chaîne inconnu {wide} à 0x{self.p - 5:X}")
+        raise OdinFormatError(f"unknown string flag {wide} at 0x{self.p - 5:X}")
 
     def type_entry(self):
         code = self.unpack("<B")
@@ -95,30 +97,28 @@ class Reader:
         if code == TYPE_ID:
             tid = self.unpack("<i")
             if tid not in self.types:
-                raise OdinFormatError(f"id de type inconnu {tid} à 0x{self.p:X}")
+                raise OdinFormatError(f"unknown type id {tid} at 0x{self.p:X}")
             return self.types[tid]
-        if code == 0x2E:  # UnnamedNull : pas de type écrit
+        if code == UNNAMED_NULL:  # no type written
             return None
-        raise OdinFormatError(f"entrée de type inattendue 0x{code:02X} à 0x{self.p - 1:X}")
+        raise OdinFormatError(f"unexpected type entry 0x{code:02X} at 0x{self.p - 1:X}")
 
     def scalar(self, kind):
         if kind is None:
             return None
         if kind == "string":
             return self.string()
-        if kind == "guid":
-            return self.take(16).hex()
-        if kind == "raw16":
+        if kind in ("guid", "raw16"):
             return self.take(16).hex()
         if kind == "bool":
             return self.unpack("<B") != 0
         return self.unpack(kind)
 
     def entries(self, until):
-        """Lit des entrées jusqu'au code de fin `until` (consommé).
+        """Read entries up to the end code `until` (consumed).
 
-        Au niveau racine (`until` = END_OF_STREAM), la fin du fichier suffit :
-        le jeu n'écrit pas de marqueur de fin de flux.
+        At the root level (`until` = END_OF_STREAM) the end of the file is
+        enough: Chop Chop Inc. does not write an end-of-stream marker.
         """
         out = []
         while True:
@@ -131,7 +131,7 @@ class Reader:
                 self.saw_eos = True
                 return out
             if code in (END_OF_NODE, END_OF_ARRAY, END_OF_STREAM):
-                raise OdinFormatError(f"fin 0x{code:02X} inattendue à 0x{start:X}")
+                raise OdinFormatError(f"unexpected end code 0x{code:02X} at 0x{start:X}")
             out.append(self.entry(code, start))
 
     def entry(self, code, start):
@@ -162,28 +162,28 @@ class Reader:
             if kind is not None:
                 e["v"] = self.scalar(kind)
             return e
-        raise OdinFormatError(f"code d'entrée inconnu 0x{code:02X} à 0x{start:X}")
+        raise OdinFormatError(f"unknown entry code 0x{code:02X} at 0x{start:X}")
 
 
 def decode(data: bytes) -> dict:
-    """Renvoie {"eos": bool, "root": [entrées]}."""
+    """Return {"eos": bool, "root": [entries]}."""
     r = Reader(data)
     root = r.entries(END_OF_STREAM)
     if r.p != len(data):
-        raise OdinFormatError(f"{len(data) - r.p} octets en trop après la fin du flux")
+        raise OdinFormatError(f"{len(data) - r.p} extra bytes after the end of the stream")
     return {"eos": r.saw_eos, "root": root}
 
 
 class Writer:
     def __init__(self):
         self.out = bytearray()
-        self.types = {}  # nom de type -> id, attribué dans l'ordre d'apparition
+        self.types = {}  # type name -> id, assigned in order of first use
 
     def pack(self, fmt, v):
         self.out += struct.pack(fmt, v)
 
     def string(self, s):
-        # Le jeu écrit toutes ses chaînes en UTF-16 (drapeau 1).
+        # The game writes every string as UTF-16 (flag 1).
         raw = s.encode("utf-16-le")
         self.pack("<B", 1)
         self.pack("<i", len(raw) // 2)
@@ -191,7 +191,7 @@ class Writer:
 
     def type_entry(self, name):
         if name is None:
-            self.pack("<B", 0x2E)
+            self.pack("<B", UNNAMED_NULL)
         elif name in self.types:
             self.pack("<B", TYPE_ID)
             self.pack("<i", self.types[name])

@@ -1,8 +1,13 @@
-# Sauvegardes et fichiers de travail : données personnelles, pas de code
+# Personal saves and working files
 work/
 *.sav
+!data/base-full-game.sav
 *.json
+!data/*.json
+
+# Python and build output
 __pycache__/
 .venv/
-!catalog/*.csv
-!catalog/*.json
+build/
+dist/
+*.spec

@@ -1,0 +1,2 @@
+*.sav binary
+*.bat text eol=crlf

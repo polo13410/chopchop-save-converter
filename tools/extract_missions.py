@@ -1,12 +1,14 @@
-"""Extrait la définition des missions du jeu : conditions et actions.
+"""Extract the mission definitions of the game: checks and actions.
 
-Chaque mission est un prefab "Mission_..." avec des enfants StartActions,
-Checks, SuccessActions et FailActions. Pour chaque mission, on écrit :
-- ses conditions (classe et _id, dans l'ordre où le jeu les sauvegarde) ;
-- ses actions (groupe, classe et cible : mission démarrée, objet créé...).
+Each mission is a "Mission_..." prefab with StartActions, Checks,
+SuccessActions and FailActions children. For each mission this writes:
+- its checks (class and _id, in the order the game saves them);
+- its actions (group, class and target: mission started, object spawned...);
+- the spawn point of SpawnObject actions, relative to the mission, which is
+  placed at the origin.
 
-Usage :
-    .venv/Scripts/python extract_missions.py <dossier *_Data du jeu> <sortie.json>
+Usage (requires UnityPy):
+    python -m tools.extract_missions <game *_Data folder> <output.json>
 """
 
 import json
@@ -16,14 +18,14 @@ import sys
 
 import UnityPy
 
-from extract_scene import world_transform
+from tools.extract_scene import world_transform
 
 HEADER = 28  # m_GameObject (12) + m_Enabled (4) + m_Script (12)
 
 
 def first_pptr_target(raw, objects, cache):
-    """Nom de la première cible référencée par une action (mission ou prefab)."""
-    off = HEADER + 4  # m_Name vide
+    """Name of the first target referenced by an action (mission or prefab)."""
+    off = HEADER + 4  # empty m_Name
     while off + 12 <= len(raw):
         file_id, path_id = struct.unpack_from("<iq", raw, off)
         if file_id == 0 and path_id > 0 and path_id in objects:
@@ -33,7 +35,7 @@ def first_pptr_target(raw, objects, cache):
 
 
 def spawn_position(raw, objects):
-    """Position (relative à la mission, placée à l'origine) du point d'apparition d'une action SpawnObject."""
+    """Spawn point of a SpawnObject action: the second reference, a Transform."""
     pptrs = []
     off = HEADER + 4
     while off + 12 <= len(raw) and len(pptrs) < 2:
@@ -68,8 +70,7 @@ def describe(obj, cache):
     return name
 
 
-def main():
-    data_dir, out = sys.argv[1], sys.argv[2]
+def extract(data_dir):
     env = UnityPy.load(os.path.join(data_dir, "resources.assets"))
     objects = {o.path_id: o for o in env.objects}
     cache = {}
@@ -82,7 +83,7 @@ def main():
             continue
         tr = go.m_Transform.read()
         if tr.m_Father and tr.m_Father.path_id:
-            continue
+            continue  # prefab roots only
         is_mission = False
         for comp in go.m_Component:
             r = (comp.component if hasattr(comp, "component") else comp).deref()
@@ -110,9 +111,18 @@ def main():
                         index = str(len(entry["actions"]) - 1)
                         entry.setdefault("spawn_positions", {})[index] = spawn_position(raw, objects)
         missions[go.m_Name] = entry
+    return missions
+
+
+def write(missions, out):
     with open(out, "w", encoding="utf-8") as f:
         json.dump(missions, f, ensure_ascii=False, indent=1, sort_keys=True)
-    print(f"{len(missions)} missions -> {out}")
+
+
+def main():
+    missions = extract(sys.argv[1])
+    write(missions, sys.argv[2])
+    print(f"{len(missions)} missions -> {sys.argv[2]}")
 
 
 if __name__ == "__main__":

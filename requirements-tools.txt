@@ -1,0 +1,4 @@
+# Only needed to regenerate the data folder or to dig into the game code.
+UnityPy==1.25.4
+dnfile==0.18.0
+dncil==1.0.2

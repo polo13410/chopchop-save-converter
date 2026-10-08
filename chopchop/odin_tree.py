@@ -1,9 +1,8 @@
-"""Outils pour manipuler l'arbre brut d'une sauvegarde (format de odin_binary).
+"""Helpers to edit the raw tree of a save (the format produced by odin_binary).
 
-Règle importante : les nœuds "ref" portent un identifiant, et des entrées
-"intref" peuvent y renvoyer. Le jeu écrit ces identifiants dans l'ordre du
-fichier (0, 1, 2...). Après toute modification, appeler `renumber()` qui
-renumérote dans l'ordre et répare les références.
+Important rule: "ref" nodes carry an id, and "intref" entries can point back
+to them. The game writes these ids in file order (0, 1, 2...). After any edit,
+call `renumber()`, which renumbers them in order and repairs the references.
 """
 
 import copy
@@ -27,7 +26,7 @@ def field(node, name):
 
 
 def array_of(node):
-    """Le tableau d'éléments d'une collection (HashSet, List, Stack, Dictionary)."""
+    """The element array of a collection (HashSet, List, Stack, Dictionary)."""
     for c in node["c"]:
         if c["t"] == "array":
             return c
@@ -40,12 +39,12 @@ def set_array(arr, items):
 
 
 def dict_pairs(node):
-    """Paires (clé, nœud valeur, nœud paire) d'un Dictionary Odin."""
+    """(key, value node, pair node) triples of an Odin Dictionary."""
     return [(p["c"][0]["v"], p["c"][1], p) for p in array_of(node)["c"]]
 
 
 def services(doc):
-    """{nom de type du service: (nœud paire, nœud valeur)} pour la racine SessionData."""
+    """{service type name: value node} for the SessionData root."""
     table = array_of(field(doc["root"][0], "data"))
     out = {}
     for pair in table["c"]:
@@ -57,15 +56,15 @@ def services(doc):
 def service(doc, prefix):
     matches = [v for k, v in services(doc).items() if k.startswith(prefix) or prefix in k]
     if len(matches) != 1:
-        raise KeyError(f"{prefix}: {len(matches)} services trouvés")
+        raise KeyError(f"{prefix}: {len(matches)} services found")
     return matches[0]
 
 
 def clone(node):
-    """Copie profonde avec de nouveaux identifiants temporaires.
+    """Deep copy with fresh temporary ids.
 
-    Les intref internes au sous-arbre suivent leur cible. Celles qui pointent
-    hors du sous-arbre sont gardées telles quelles et réparées par renumber().
+    Intrefs inside the subtree follow their target. Those pointing outside
+    the subtree are kept as they are and repaired by renumber().
     """
     node = copy.deepcopy(node)
     mapping = {}
@@ -91,11 +90,11 @@ def fresh_ref(type_name, children, name=None):
 
 
 def renumber(doc, originals):
-    """Renumérote les ref dans l'ordre du fichier et répare les intref.
+    """Renumber refs in file order and repair intrefs.
 
-    `originals` : {ancien id: nœud} pour toutes les sources utilisées. Si une
-    intref vise un nœud supprimé ou situé plus loin, on la remplace par une
-    copie complète de ce nœud, comme le ferait Odin à la première occurrence.
+    `originals`: {old id: node} for every source used. If an intref targets a
+    node that was removed or now comes later in the file, it is replaced by a
+    full copy of that node, which is what Odin writes on first occurrence.
     """
     seen = {}
     counter = itertools.count()
@@ -108,7 +107,7 @@ def renumber(doc, originals):
                     continue
                 target = originals.get(e["v"])
                 if target is None:
-                    raise ValueError(f"référence interne {e['v']} introuvable")
+                    raise ValueError(f"internal reference {e['v']} not found")
                 old = e["v"]
                 full = clone(target)
                 if "n" in e:

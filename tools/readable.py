@@ -1,19 +1,18 @@
-"""Vue lisible (avec perte) d'une sauvegarde décodée, pour l'analyse uniquement."""
+"""Readable (lossy) view of a decoded save, for analysis only."""
 
 
 def readable(e):
     t = e["t"]
     if t in ("ref", "struct"):
         kids = e["c"]
-        # Dictionnaire Odin : un comparer puis un tableau de paires $k/$v
+        # Odin Dictionary: a comparer, then an array of $k/$v pairs
         if (e.get("type") or "").startswith("System.Collections.Generic.Dictionary"):
             arr = next((k for k in kids if k["t"] == "array"), None)
             if arr is not None:
                 out = {}
                 for pair in arr["c"]:
                     k, v = pair["c"][0], pair["c"][1]
-                    key = readable(k)
-                    out[str(key)] = readable(v)
+                    out[str(readable(k))] = readable(v)
                 return out
         if e.get("type") == "System.RuntimeType, mscorlib":
             return "type:" + kids[0]["v"]
@@ -24,7 +23,7 @@ def readable(e):
     if t == "array":
         return [readable(k) for k in e["c"]]
     if t == "parray":
-        return f"<{e['count']}x{e['size']}o>"
+        return f"<{e['count']}x{e['size']}B>"
     if t == "intref":
         return f"->ref{e['v']}"
     return e.get("v")
