@@ -20,6 +20,8 @@ What the program does when you confirm:
 
 Your saves live in `%USERPROFILE%\AppData\LocalLow\NullRef Entertainment\`. To undo, copy the files from the backup's `saves` folder back into `ChopChopInc\saves`.
 
+> **Tip: easier save management.** The [Better Save Slots](https://www.nexusmods.com/chopchopinc/mods/6) mod (Nexus Mods, needs BepInEx) adds more save slots to the game. Handy to keep your converted save next to a fresh full-game run. It is a separate community mod, not made by this project. The converter installs the converted save in the first slot (`save0.sav`).
+
 > **Windows says "Windows protected your PC"?** The program is not signed with a paid certificate, so SmartScreen warns about it. Click *More info* > *Run anyway*. See [Is it safe?](#is-it-safe) to check the file first.
 
 ### Is it safe?
