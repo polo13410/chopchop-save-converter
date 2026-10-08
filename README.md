@@ -35,11 +35,28 @@ python savetool.py summary  save0.sav --depth 3     # arborescence
 python savetool.py services demo.sav complet.sav    # compare les services de deux sauvegardes
 ```
 
+## Catalogue des identifiants
+
+Les sauvegardes ne désignent les recettes, objets, missions, etc. que par un entier (assetID).
+`extract_catalog.py` retrouve le nom de chaque ID dans les fichiers du jeu :
+
+```
+python -m venv .venv
+.venv/Scripts/python -m pip install UnityPy
+.venv/Scripts/python extract_catalog.py "C:/Program Files (x86)/Steam/steamapps/common/ChopChopIncDemo/ChopChopIncDemo_Data" catalog/demo.csv
+.venv/Scripts/python extract_catalog.py "C:/Program Files (x86)/Steam/steamapps/common/ChopChopInc/ChopChopInc_Data" catalog/complet.csv
+```
+
+Résultat sur une sauvegarde de démo de trois heures : tous les IDs utilisés existent aussi dans le jeu complet,
+avec le même sens. Seule exception : un panneau propre à la démo (`HiddenMission_HomeSweetHome_26_DEMOSIGN`).
+La carte est aussi la même : la plupart des objets du décor ont le même type à la même position.
+
 ## Avancement
 
 - [x] Décodeur / encodeur Odin binaire, testé sur les deux sauvegardes
+- [x] Vérifier que les identifiants d'objets et de recettes sont les mêmes entre démo et jeu complet
 - [ ] Cartographier chaque service (argent, inventaire, recettes, objets du monde, missions)
-- [ ] Vérifier que les identifiants d'objets et de recettes sont les mêmes entre démo et jeu complet
+- [ ] Comparer la structure interne des données par type (missions, machines, composants des objets)
 - [ ] Greffer les sections compatibles de la démo dans une sauvegarde du jeu complet
 - [ ] Tester en jeu, une section à la fois
 

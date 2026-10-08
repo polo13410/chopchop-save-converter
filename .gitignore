@@ -3,3 +3,5 @@ work/
 *.sav
 *.json
 __pycache__/
+.venv/
+!catalog/*.csv
