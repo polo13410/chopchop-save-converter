@@ -2,7 +2,8 @@ name: Build and release
 
 # Every push to main: run the tests, build the Windows .exe on GitHub's servers,
 # sign a build provenance attestation for it, and publish a GitHub release with
-# the .exe and its SHA-256 hash. Can also be run by hand from the Actions tab.
+# the .exe, its SHA-256 hash, and the list of changes since the previous release.
+# Can also be run by hand from the Actions tab.
 on:
   push:
     branches: [main]
@@ -18,6 +19,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history and tags, to list the changes since the last release
 
       - uses: actions/setup-python@v5
         with:
@@ -45,6 +48,56 @@ jobs:
           "tag=$tag" >> $env:GITHUB_OUTPUT
           "sha256=$hash" >> $env:GITHUB_OUTPUT
 
+      - name: Release notes
+        shell: pwsh
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          SHA256: ${{ steps.meta.outputs.sha256 }}
+        run: |
+          # The previous release is the most recent v* tag (this release's tag does not exist yet).
+          $previous = git tag --list "v*" --sort=-creatordate | Select-Object -First 1
+          $format = "- %s ([%h](https://github.com/$env:REPO/commit/%H))"
+          if ($previous) {
+            $changes = git log --no-merges --pretty=format:$format "$previous..HEAD"
+            $compare = "[Full comparison with $previous](https://github.com/$env:REPO/compare/$previous...$env:SHA)"
+          } else {
+            $changes = git log --no-merges --pretty=format:$format
+            $compare = "First release."
+          }
+          if (-not $changes) { $changes = "- No code change (rebuild)." }
+
+          $template = @'
+          Download **ChopChopSaveConverter.exe**, close the game, and double-click it. See the [README](https://github.com/{REPO}#how-to-use-it) for the full guide.
+
+          ### What changed
+
+          {CHANGES}
+
+          {COMPARE}
+
+          ### Verify your download
+
+          This file was built by GitHub Actions from commit [`{SHA}`](https://github.com/{REPO}/commit/{SHA}), [build log here](https://github.com/{REPO}/actions/runs/{RUN_ID}).
+
+          **SHA-256:** `{SHA256}`
+
+          Check it in PowerShell, the two values must be identical:
+          ```
+          (Get-FileHash .\ChopChopSaveConverter.exe -Algorithm SHA256).Hash
+          ```
+
+          Stronger check, with the [GitHub CLI](https://cli.github.com/): it proves the file was built by this repository's workflow.
+          ```
+          gh attestation verify .\ChopChopSaveConverter.exe --repo {REPO}
+          ```
+          '@
+          $notes = $template.Replace("{CHANGES}", ($changes -join "`n")).Replace("{COMPARE}", $compare)
+          $notes = $notes.Replace("{REPO}", $env:REPO).Replace("{SHA}", $env:SHA).Replace("{RUN_ID}", $env:RUN_ID).Replace("{SHA256}", $env:SHA256)
+          $notes | Out-File -Encoding utf8 release-notes.md
+          Get-Content release-notes.md
+
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v2
         with:
@@ -67,22 +120,4 @@ jobs:
           files: |
             dist/ChopChopSaveConverter.exe
             dist/ChopChopSaveConverter.exe.sha256
-          body: |
-            Download **ChopChopSaveConverter.exe**, close the game, and double-click it. See the [README](https://github.com/${{ github.repository }}#how-to-use-it) for the full guide.
-
-            ### Verify your download
-
-            This file was built by GitHub Actions from commit [`${{ github.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}), [build log here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-
-            **SHA-256:** `${{ steps.meta.outputs.sha256 }}`
-
-            Check it in PowerShell, the two values must be identical:
-            ```
-            (Get-FileHash .\ChopChopSaveConverter.exe -Algorithm SHA256).Hash
-            ```
-
-            Stronger check, with the [GitHub CLI](https://cli.github.com/): it proves the file was built by this repository's workflow.
-            ```
-            gh attestation verify .\ChopChopSaveConverter.exe --repo ${{ github.repository }}
-            ```
-          generate_release_notes: true
+          body_path: release-notes.md

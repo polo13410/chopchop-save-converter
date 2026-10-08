@@ -191,7 +191,7 @@ Summarize and compare saves: `python -m tools.compare_saves a.sav b.sav c.sav`.
 
 Build the .exe locally: run `build.bat`. A local build will not have the same hash as the official one, because PyInstaller builds are not byte-for-byte reproducible. Only the release files are the reference.
 
-Releases are automatic: every push to `main` runs the tests, builds the .exe on GitHub, signs its build attestation, and publishes a release named `v<version>-build.<number>` with the .exe, its `.sha256` file and the hash in the notes. The version comes from `chopchop/__init__.py`.
+Releases are automatic: every push to `main` runs the tests, builds the .exe on GitHub, signs its build attestation, and publishes a release named `v<version>-build.<number>` with the .exe, its `.sha256` file, the hash, and the list of commits since the previous release. Commit titles become the release notes, so write them for players. The version comes from `chopchop/__init__.py`.
 
 ### Updating after a game patch
 
