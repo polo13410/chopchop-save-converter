@@ -7,12 +7,10 @@ Ce qui est transféré :
 - recettes débloquées et articles de la boutique (union démo + base) ;
 - valeurs des audiences (TargetAudience) ;
 - contenu des inventaires spéciaux : argent, sac du joueur, etc. ;
-- tableau des missions et missions actives, avec l'état de leurs conditions.
-
+- tableau des missions et missions actives, avec l'état de leurs conditions ;
+- statistiques du joueur : force, endurance, vitesse ;
 - objets du monde : arbres coupés, constructions, machines et leur contenu ;
 - position et orientation du joueur.
-
-- statistiques du joueur : force, endurance, vitesse.
 
 Ce qui n'est pas transféré : objet en main, drones et
 camions en cours de livraison, succès.
