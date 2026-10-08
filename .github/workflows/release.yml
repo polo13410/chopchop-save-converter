@@ -1,14 +1,17 @@
 name: Build and release
 
-# Push a tag like v1.0.0 to build the Windows .exe and publish it as a GitHub release.
-# Can also be run by hand from the Actions tab (the .exe is then kept as a build artifact).
+# Every push to main: run the tests, build the Windows .exe on GitHub's servers,
+# sign a build provenance attestation for it, and publish a GitHub release with
+# the .exe and its SHA-256 hash. Can also be run by hand from the Actions tab.
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write      # create the release and its tag
+  id-token: write      # sign the attestation (Sigstore)
+  attestations: write  # store the attestation on GitHub
 
 jobs:
   build:
@@ -31,14 +34,55 @@ jobs:
       - name: Self-test the .exe
         run: dist\ChopChopSaveConverter.exe --self-test
 
+      - name: Version, tag and SHA-256
+        id: meta
+        shell: pwsh
+        run: |
+          $version = python -c "import chopchop; print(chopchop.__version__)"
+          $tag = "v$version-build.${{ github.run_number }}"
+          $hash = (Get-FileHash dist\ChopChopSaveConverter.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  ChopChopSaveConverter.exe" | Out-File -Encoding ascii dist\ChopChopSaveConverter.exe.sha256
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "sha256=$hash" >> $env:GITHUB_OUTPUT
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/ChopChopSaveConverter.exe
+
       - uses: actions/upload-artifact@v4
         with:
           name: ChopChopSaveConverter
-          path: dist/ChopChopSaveConverter.exe
+          path: |
+            dist/ChopChopSaveConverter.exe
+            dist/ChopChopSaveConverter.exe.sha256
 
       - name: Publish the release
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/ChopChopSaveConverter.exe
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Chop Chop Save Converter ${{ steps.meta.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          make_latest: true
+          files: |
+            dist/ChopChopSaveConverter.exe
+            dist/ChopChopSaveConverter.exe.sha256
+          body: |
+            Download **ChopChopSaveConverter.exe**, close the game, and double-click it. See the [README](https://github.com/${{ github.repository }}#how-to-use-it) for the full guide.
+
+            ### Verify your download
+
+            This file was built by GitHub Actions from commit [`${{ github.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}), [build log here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+            **SHA-256:** `${{ steps.meta.outputs.sha256 }}`
+
+            Check it in PowerShell, the two values must be identical:
+            ```
+            (Get-FileHash .\ChopChopSaveConverter.exe -Algorithm SHA256).Hash
+            ```
+
+            Stronger check, with the [GitHub CLI](https://cli.github.com/): it proves the file was built by this repository's workflow.
+            ```
+            gh attestation verify .\ChopChopSaveConverter.exe --repo ${{ github.repository }}
+            ```
           generate_release_notes: true

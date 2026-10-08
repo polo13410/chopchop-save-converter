@@ -20,7 +20,30 @@ What the program does when you confirm:
 
 Your saves live in `%USERPROFILE%\AppData\LocalLow\NullRef Entertainment\`. To undo, copy the files from the backup's `saves` folder back into `ChopChopInc\saves`.
 
-> **Windows says "Windows protected your PC"?** The program is not signed (signing costs money), so SmartScreen warns about it. Click *More info* > *Run anyway*. If you prefer, you can read the source code here and run it with Python instead (see [Run from source](#run-from-source)).
+> **Windows says "Windows protected your PC"?** The program is not signed with a paid certificate, so SmartScreen warns about it. Click *More info* > *Run anyway*. See [Is it safe?](#is-it-safe) to check the file first.
+
+### Is it safe?
+
+You should not run an .exe from the internet blindly. Here is how to check this one.
+
+- **It is built in the open.** Nobody uploads the .exe by hand. GitHub's own servers build it from the source code in this repository, every time the code changes. Each release links to the exact commit and to the build log.
+- **Check the hash.** Each release page shows the SHA-256 of the .exe (also in the `.sha256` file next to it). In PowerShell, in your download folder:
+
+  ```
+  (Get-FileHash .\ChopChopSaveConverter.exe -Algorithm SHA256).Hash
+  ```
+
+  The value must match the release page. This proves your file is the one on the release page and was not altered.
+- **Check where it was built (strongest).** Every build gets a signed [build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations). It is a certificate, signed by GitHub, saying "this exact file was built by this repository's workflow from this commit". A hash posted somewhere can be faked along with the file; this cannot. With the [GitHub CLI](https://cli.github.com/):
+
+  ```
+  gh attestation verify .\ChopChopSaveConverter.exe --repo polo13410/chopchop-save-converter
+  ```
+
+- **Scan it.** You can drop the file on [VirusTotal](https://www.virustotal.com/). Some antivirus engines flag every program made with PyInstaller, the standard tool that turns Python into an .exe. That is a known false positive.
+- **Or skip the .exe entirely** and run the source code with Python (see [Run from source](#run-from-source)). The converter only uses the Python standard library.
+
+What the program touches: it reads your demo save, and writes only inside `%USERPROFILE%\AppData\LocalLow\NullRef Entertainment\ChopChopInc\`, after backing up the existing saves. It does not connect to the internet.
 
 ### Options
 
@@ -158,7 +181,9 @@ python -m tools.savetool schema --a demo.sav --b full.sav    # fields written pe
 
 Tests: `python -m unittest discover tests`. The conversion test needs a demo save and a reference output in `work/` (`ChopChopIncDemo.sav`, `reference-v2.sav`). These are personal files, kept out of the repository, so the test is skipped without them.
 
-Build the .exe: run `build.bat`. Releases are built by GitHub Actions: push a tag such as `v1.0.1` and the workflow publishes `ChopChopSaveConverter.exe`.
+Build the .exe locally: run `build.bat`. A local build will not have the same hash as the official one, because PyInstaller builds are not byte-for-byte reproducible. Only the release files are the reference.
+
+Releases are automatic: every push to `main` runs the tests, builds the .exe on GitHub, signs its build attestation, and publishes a release named `v<version>-build.<number>` with the .exe, its `.sha256` file and the hash in the notes. The version comes from `chopchop/__init__.py`.
 
 ### Updating after a game patch
 
