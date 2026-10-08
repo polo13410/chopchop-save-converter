@@ -85,16 +85,38 @@ arbres repoussés, constructions du joueur et quelques déclencheurs déplacés 
    supprimer ceux que le joueur a détruits, ajouter ceux qu'il a construits avec de nouveaux worldObjectID.
 4. Renuméroter toutes les données par objet et les missions en cours avec la table de correspondance.
 
+## Conversion (version 1 : progression seulement)
+
+```
+python convert.py demo.sav base_complet.sav sortie.sav
+```
+
+`base_complet.sav` est une sauvegarde du jeu complet en tout début de partie.
+Le monde de cette base est gardé tel quel. Sont transférés depuis la démo :
+recettes, articles de boutique, audiences, argent et sac du joueur, tableau des missions
+et missions actives avec l'état de leurs conditions.
+Une mission dont les conditions ont changé entre les versions repart de zéro.
+
+**Cycle de vie des missions**, observé sur une partie du jeu complet :
+une mission active est un objet du monde, placé à l'origine, qui ne porte que le composant mission.
+Une mission terminée disparaît. Le tableau garde les missions débloquées et disponibles par assetID,
+et les missions en cours par worldObjectID.
+
+**Codes de composants** (`serializedComponents`), identiques dans les deux versions :
+2 santé, 3 inventaire, 4 déplacement sur spline, 7 spawner, 9 fabrication automatique,
+10 fabrication, 15 ramassable, 17 mission, 25 IA (jeu complet), 29 réapparition (jeu complet).
+
 ## Avancement
 
 - [x] Décodeur / encodeur Odin binaire, testé sur les deux sauvegardes
 - [x] Vérifier que les identifiants d'objets et de recettes sont les mêmes entre démo et jeu complet
 - [x] Comparer la structure interne des données par type
 - [x] Comprendre les deux sortes d'identifiants et le rattachement des missions
-- [ ] Comprendre le cycle de vie des missions (sauvegarde du jeu complet avec missions en cours et terminées)
-- [ ] Décoder `serializedComponents` des objets du monde
-- [ ] Greffer les sections compatibles de la démo dans une sauvegarde du jeu complet
-- [ ] Tester en jeu, une section à la fois
+- [x] Comprendre le cycle de vie des missions
+- [x] Décoder `serializedComponents` des objets du monde
+- [x] Convertisseur version 1 : progression sans le monde
+- [ ] Tester la version 1 en jeu
+- [ ] Version 2 : objets du monde (arbres coupés, constructions, téléporteurs réparés), position du joueur
 
 ## Différences connues entre les versions
 
