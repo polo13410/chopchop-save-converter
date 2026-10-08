@@ -78,6 +78,8 @@ Run it from a terminal to use these:
 - **One full-game tutorial step** ("walk to Chester") may appear. Just follow it.
 - Tested with the full game Steam build `25187442` and the demo build `24361147`. A game update may need new data (see [Updating after a game patch](#updating-after-a-game-patch)).
 
+Curious what it does before running it? The [examples folder](examples) has a real demo save, its conversion, and a side-by-side comparison.
+
 If something looks wrong in game, open an issue with what you see, your `conversion-log.txt`, and the game log `ChopChopInc\Player.log` from the saves folder above.
 
 ---
@@ -150,6 +152,7 @@ The converter starts from a fresh full-game save shipped in [`data/base-full-gam
 | [`chopchop/`](chopchop) | The converter: save format, tree editing, progress, world, missions |
 | [`data/`](data) | Catalogs, initial maps and mission definitions extracted from the games, and the base save |
 | [`tools/`](tools) | Analysis and extraction tools (need UnityPy) |
+| [`examples/`](examples) | A real demo save, its conversion and a side-by-side comparison |
 | [`tests/`](tests) | Tests |
 
 ## Run from source
@@ -179,7 +182,9 @@ python -m tools.savetool services demo.sav full.sav          # services side by 
 python -m tools.savetool schema --a demo.sav --b full.sav    # fields written per type
 ```
 
-Tests: `python -m unittest discover tests`. The conversion test needs a demo save and a reference output in `work/` (`ChopChopIncDemo.sav`, `reference-v2.sav`). These are personal files, kept out of the repository, so the test is skipped without them.
+Tests: `python -m unittest discover tests`. They convert [`examples/demo-save.sav`](examples/demo-save.sav) and compare the result byte for byte with [`examples/converted-save.sav`](examples/converted-save.sav), the expected output. They also run on every push, before the release is built.
+
+Summarize and compare saves: `python -m tools.compare_saves a.sav b.sav c.sav`.
 
 Build the .exe locally: run `build.bat`. A local build will not have the same hash as the official one, because PyInstaller builds are not byte-for-byte reproducible. Only the release files are the reference.
 

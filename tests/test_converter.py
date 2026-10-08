@@ -1,8 +1,7 @@
 """Tests. Run from the repository root: python -m unittest discover tests
 
-The round-trip test always runs on the bundled base save. The conversion test
-needs a demo save and a reference output, which are personal files kept out of
-the repository: put them in work/ (see CONTRIBUTING notes in the README).
+The conversion test converts examples/demo-save.sav and compares the result
+byte for byte with examples/converted-save.sav, the expected output.
 """
 
 import os
@@ -12,8 +11,8 @@ from chopchop import data_dir, odin_binary
 from chopchop.converter import convert
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEMO = os.path.join(ROOT, "work", "ChopChopIncDemo.sav")
-REFERENCE = os.path.join(ROOT, "work", "reference-v2.sav")
+DEMO = os.path.join(ROOT, "examples", "demo-save.sav")
+REFERENCE = os.path.join(ROOT, "examples", "converted-save.sav")
 
 
 class RoundTrip(unittest.TestCase):
@@ -23,7 +22,6 @@ class RoundTrip(unittest.TestCase):
         self.assertEqual(odin_binary.encode(odin_binary.decode(data)), data)
 
 
-@unittest.skipUnless(os.path.exists(DEMO) and os.path.exists(REFERENCE), "no local demo save / reference")
 class Conversion(unittest.TestCase):
     def test_matches_reference(self):
         with open(DEMO, "rb") as f:
